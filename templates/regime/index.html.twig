@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Regime index{% endblock %}
+
+{% block body %}
+    <h1>Regime index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Couleur</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for regime in regimes %}
+            <tr>
+                <td>{{ regime.id }}</td>
+                <td>{{ regime.nom }}</td>
+                <td>{{ regime.couleur }}</td>
+                <td>{{ regime.description }}</td>
+                <td>
+                    <a href="{{ path('app_regime_show', {'id': regime.id}) }}">show</a>
+                    <a href="{{ path('app_regime_edit', {'id': regime.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_regime_new') }}">Create new</a>
+{% endblock %}

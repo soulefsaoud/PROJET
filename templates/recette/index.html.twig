@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recette index{% endblock %}
+
+{% block body %}
+    <h1>Recette index</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nom</th>
+            <th>Ingredients</th>
+            <!-- Autres colonnes -->
+        </tr>
+        </thead>
+        <tbody>
+        {% for recette in recettes %}
+            <tr>
+                <td>{{ recette.id }}</td>
+                <td>{{ recette.nom }}</td>
+                <td>
+                    {% if recette.ingredientRecettes|length > 0 %}
+                        <ul>
+                            {% for ingredientRecette in recette.ingredientRecettes %}
+                                <li>
+                                    {{ ingredientRecette.ingredient.nom }} - {{ ingredientRecette.quantite }} {{ ingredientRecette.getUniteMesure() }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Aucun ingrédient trouvé.</p>
+                    {% endif %}
+                </td>
+                <!-- Autres colonnes -->
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">Aucune recette trouvée.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('app_recette_new') }}">Créer une nouvelle recette</a>
+{% endblock %}
