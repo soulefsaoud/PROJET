@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
 class Ingredient
 {
@@ -22,7 +23,7 @@ class Ingredient
     private ?string $categorie = null;
 
     #[ORM\Column(type: "integer", nullable: true)]
-    private $quantite;
+    private $quantite = null;
 
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $unite_mesure = null;
@@ -61,9 +62,16 @@ class Ingredient
     #[ORM\OneToMany(mappedBy: 'ingredient', targetEntity: IngredientRecette::class)]
     private Collection $ingredientRecettes;
 
+    /**
+     * @var Collection<int, UserIngredient>
+     */
+    #[ORM\OneToMany(targetEntity: UserIngredient::class, mappedBy: 'ingredient')]
+    private Collection $userIngredients;
+
     public function __construct()
     {
         $this->ingredientRecettes = new ArrayCollection();
+        $this->userIngredients = new ArrayCollection();
     }
 
     public function getIngredientRecettes(): Collection
@@ -91,6 +99,36 @@ class Ingredient
     public function setUniteMesure(string $unite_mesure): self
     {
         $this->unite_mesure = $unite_mesure;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserIngredient>
+     */
+    public function getUserIngredients(): Collection
+    {
+        return $this->userIngredients;
+    }
+
+    public function addUserIngredient(UserIngredient $userIngredient): static
+    {
+        if (!$this->userIngredients->contains($userIngredient)) {
+            $this->userIngredients->add($userIngredient);
+            $userIngredient->setIngredient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserIngredient(UserIngredient $userIngredient): static
+    {
+        if ($this->userIngredients->removeElement($userIngredient)) {
+            // set the owning side to null (unless already changed)
+            if ($userIngredient->getIngredient() === $this) {
+                $userIngredient->setIngredient(null);
+            }
+        }
 
         return $this;
     }

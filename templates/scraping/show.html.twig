@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1>{{ recipe.title }}</h1>
+
+                {% if recipe.imagePath %}
+                    <img src="{{ asset(recipe.imagePath) }}"
+                         class="img-fluid mb-4"
+                         alt="{{ recipe.imageAlt ?: recipe.title }}"
+                         style="max-height: 400px; width: 100%; object-fit: cover;">
+                {% endif %}
+
+                <div class="mb-4">
+                    {% if recipe.prepTime %}
+                        <span class="badge bg-info me-2">Préparation: {{ recipe.prepTime }}min</span>
+                    {% endif %}
+                    {% if recipe.cookTime %}
+                        <span class="badge bg-warning me-2">Cuisson: {{ recipe.cookTime }}min</span>
+                    {% endif %}
+                    {% if recipe.servings %}
+                        <span class="badge bg-success">{{ recipe.servings }} portions</span>
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Ingrédients</h3>
+                        <ul class="list-unstyled">
+                            {% for ingredient in recipe.ingredients|split('\n') %}
+                                {% if ingredient|trim %}
+                                    <li>• {{ ingredient }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h3>Instructions</h3>
+                        <ol>
+                            {% for instruction in recipe.instructions|split('\n') %}
+                                {% if instruction|trim %}
+                                    <li>{{ instruction }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+
+                <hr>
+                <p class="text-muted">
+                    <small>Source originale: <a href="{{ recipe.sourceUrl }}" target="_blank">{{ recipe.sourceUrl }}</a></small>
+                </p>
+            </div>
+        </div>
+
+        <a href="{{ path('recipes_list') }}" class="btn btn-secondary">← Retour à la liste</a>
+    </div>
+{% endblock %}

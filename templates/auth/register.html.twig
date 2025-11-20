@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Inscription</h3>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.firstName) }}
+                            {{ form_errors(form.firstName) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.lastName) }}
+                            {{ form_errors(form.lastName) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.email) }}
+                            {{ form_errors(form.email) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.password.first, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.password.first) }}
+                            {{ form_errors(form.password.first) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.password.second, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.password.second) }}
+                            {{ form_errors(form.password.second) }}
+                        </div>
+
+                        <div class="d-grid">
+                            {{ form_widget(form.submit) }}
+                        </div>
+                        {{ form_end(form) }}
+
+                        <div class="text-center mt-3">
+                            <p>Déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

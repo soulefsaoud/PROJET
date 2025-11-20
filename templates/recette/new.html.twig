@@ -4,6 +4,10 @@
 
 {% block body %}
     <h1>Create new Recette</h1>
+    {% for ingredientRecette in recette.ingredientRecettes %}
+        {{ ingredientRecette.ingredient.nom }} - {{ ingredientRecette.quantite }} {{ ingredientRecette.uniteMesure }}<br>
+    {% endfor %}
+
 
     {{ include('recette/_form.html.twig') }}
 

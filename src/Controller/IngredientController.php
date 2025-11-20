@@ -1,9 +1,11 @@
 <?php
 
+
 namespace App\Controller;
 
-use App\Http\Controllers\Controller;
 use App\Entity\Ingredient;
+use App\Entity\Recipe;
+use App\Entity\IngredientRecette;
 use App\Form\Ingredient1Form;
 use App\Repository\IngredientRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,10 +13,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/ingredient')]
 final class IngredientController extends AbstractController
 {
+    // ... rest of the class remains unchanged
+
     private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -87,6 +92,32 @@ final class IngredientController extends AbstractController
         return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
     }
 
+
+
+    // src/Controller/IngredientController.php
+
+
+
+
+    /**
+     * @Route("/api/ingredients", name="api_ingredients", methods={"GET", "POST"})
+     */
+    public function getIngredients(Request $request): JsonResponse
+    {
+        if ($request->isMethod('POST')) {
+            $data = json_decode($request->getContent(), true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return new JsonResponse(['error' => 'Invalid JSON data'], 400);
+            }
+
+            // Traiter les données POST ici
+            return new JsonResponse(['message' => 'Données reçues avec succès', 'data' => $data]);
+        }
+
+        // Traiter les requêtes GET ici
+        return new JsonResponse(['message' => 'Requête GET reçue avec succès']);
+    }
 
 
 

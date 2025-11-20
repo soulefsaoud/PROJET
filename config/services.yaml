@@ -4,17 +4,37 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # Les paramètres vont ici
+    recipes_upload_dir: '%kernel.project_dir%/public/uploads/recipes'
 
 services:
-    # default configuration for services in *this* file
+    # Configuration automatique par défaut
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # Configuration spécifique pour le service d'images
+    App\Services\ImageDownloadService:
+        arguments:
+            $uploadDir: '%recipes_upload_dir%'
+
+
+    App\Services\RecetteScraperService:
+            arguments:
+                $entityManager: '@doctrine.orm.entity_manager'
+                $parser: '@App\Services\RecetteParserService'
+
+    App\Services\:
+        resource: '../src/Services/'
+        autowire: true
+        autoconfigure: true
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

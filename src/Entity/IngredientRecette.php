@@ -3,20 +3,47 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\IngredientRecetteRepository;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: IngredientRecetteRepository::class)]
 class IngredientRecette
 {
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Recette::class, inversedBy: 'ingredientRecettes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Recette $recette = null;
+
+
+
+
+    // Dans IngredientRecette
+    #[ManyToOne(targetEntity: Ingredient::class)]
+    #[JoinColumn(name: 'ingredient_id', referencedColumnName: 'id', nullable: false)]
+    private ?Ingredient $ingredient = null;
+
+    public function setIngredient(?Ingredient $ingredient): self
+    {
+        $this->ingredient = $ingredient;
+        return $this;
+    }
+
+    /*
 #[ORM\Id]
-#[ORM\ManyToOne(targetEntity: Recette::class, inversedBy: 'ingredientRecettes')]
+#[ORM\ManyToOne(targetEntity: Recette::class, inversedBy: 'ingredientRecettes', cascade: ['persist'])]
 #[ORM\JoinColumn(nullable: false)]
-private $recette;
+private ?Recette $recette = null;
 
 #[ORM\Id]
 #[ORM\ManyToOne(targetEntity: Ingredient::class, inversedBy: 'ingredientRecettes')]
 #[ORM\JoinColumn(nullable: false)]
 private $ingredient;
-
+*/
 #[ORM\Column]
 private ?string $quantite = null;
 
@@ -41,11 +68,7 @@ public function getIngredient(): ?Ingredient
 return $this->ingredient;
 }
 
-public function setIngredient(?Ingredient $ingredient): self
-{
-$this->ingredient = $ingredient;
-return $this;
-}
+
 
 public function getQuantite(): ?string
 {

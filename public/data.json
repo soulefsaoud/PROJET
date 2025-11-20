@@ -1,357 +1,84 @@
-{
-    "simulatedRecettes": [
-        {
-            "nom": "Salade César",
-            "instructions": "Mélanger tous les ingrédients.",
-            "tempsPreparation": 15,
-            "tempsCuisson": 0,
-            "descriptions": "Une salade classique avec une touche moderne.",
-            "difficulte": "facile",
-            "date_creation": "2023-01-15",
-            "nombre_de_portions": 2,
-            "ingredients": [
-                {
-                    "nom": "oeuf",
-                    "quantite": "4",
-                    "unite_mesure": "pièces"
-                },
-                {
-                    "nom": "épinard",
-                    "quantite": "200",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "beurre",
-                    "quantite": "20",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "fromage",
-                    "quantite": "50",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "sel",
-                    "quantite": "1",
-                    "unite_mesure": "pincée"
-                },
-                {
-                    "nom": "poivre",
-                    "quantite": "1",
-                    "unite_mesure": "pincée"
-                }
-            ]
-        },
-        {
-            "nom": "Pâtes Carbonara",
-            "instructions": "Cuire les pâtes, mélanger avec les œufs et le bacon.",
-            "tempsPreparation": 10,
-            "tempsCuisson": 15,
-            "descriptions": "Un classique italien riche et crémeux.",
-            "difficulte": "moyen",
-            "date_creation": "2023-02-20",
-            "nombre_de_portions": 4,
-            "ingredients": [
-                {
-                    "nom": "oeuf",
-                    "quantite": "4",
-                    "unite_mesure": "pièces"
-                },
-                {
-                    "nom": "épinard",
-                    "quantite": "200",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "beurre",
-                    "quantite": "20",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "fromage",
-                    "quantite": "50",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "sel",
-                    "quantite": "1",
-                    "unite_mesure": "pincée"
-                },
-                {
-                    "nom": "poivre",
-                    "quantite": "1",
-                    "unite_mesure": "pincée"
-                }
-            ]
-        },
-        {
-            "nom": "Tarte aux Pommes",
-            "instructions": "Préparer la pâte, éplucher les pommes, assembler et cuire.",
-            "tempsPreparation": 30,
-            "tempsCuisson": 45,
-            "descriptions": "Une délicieuse tarte aux pommes maison.",
-            "difficulte": "moyen",
-            "date_creation": "2023-03-10",
-            "nombre_de_portions": 6,
-            "ingredients": [
-                {
-                    "nom": "oeuf",
-                    "quantite": "4",
-                    "unite_mesure": "pièces"
-                },
-                {
-                    "nom": "épinard",
-                    "quantite": "200",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "beurre",
-                    "quantite": "20",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "fromage",
-                    "quantite": "50",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "sel",
-                    "quantite": "1",
-                    "unite_mesure": "pincée"
-                },
-                {
-                    "nom": "poivre",
-                    "quantite": "1",
-                    "unite_mesure": "pincée"
-                }
-            ]
-        },
-        {
-            "nom": "Curry de Légumes",
-            "instructions": "Faire revenir les légumes, ajouter la sauce curry et laisser mijoter.",
-            "tempsPreparation": 20,
-            "tempsCuisson": 25,
-            "descriptions": "Un curry végétarien savoureux et épicé.",
-            "difficulte": "facile",
-            "date_creation": "2023-04-05",
-            "nombre_de_portions": 4,
-            "ingredients": [
-                {
-                    "nom": "oeuf",
-                    "quantite": "4",
-                    "unite_mesure": "pièces"
-                },
-                {
-                    "nom": "épinard",
-                    "quantite": "200",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "beurre",
-                    "quantite": "20",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "fromage",
-                    "quantite": "50",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "sel",
-                    "quantite": "1",
-                    "unite_mesure": "pincée"
-                },
-                {
-                    "nom": "poivre",
-                    "quantite": "1",
-                    "unite_mesure": "pincée"
-                }
-            ]
-        },
-        {
-            "nom": "Poulet Grillé",
-            "instructions": "Mariner le poulet, puis le griller avec des épices.",
-            "tempsPreparation": 15,
-            "tempsCuisson": 30,
-            "descriptions": "Un poulet grillé juteux et savoureux.",
-            "difficulte": "facile",
-            "date_creation": "2023-05-12",
-            "nombre_de_portions": 3,
-            "ingredients": [
-                {
-                    "nom": "oeuf",
-                    "quantite": "4",
-                    "unite_mesure": "pièces"
-                },
-                {
-                    "nom": "épinard",
-                    "quantite": "200",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "beurre",
-                    "quantite": "20",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "fromage",
-                    "quantite": "50",
-                    "unite_mesure": "g"
-                },
-                {
-                    "nom": "sel",
-                    "quantite": "1",
-                    "unite_mesure": "pincée"
-                },
-                {
-                    "nom": "poivre",
-                    "quantite": "1",
-                    "unite_mesure": "pincée"
-                }
-            ]
-        }
-    ],
-    "simulatedIngredients": [
-        {
-            "nom": "Laitue"
-        },
-        {
-            "nom": "Poulet"
-        },
-        {
-            "nom": "Croûtons"
-        },
-        {
-            "nom": "Pâtes"
-        },
-        {
-            "nom": "Œufs"
-        },
-        {
-            "nom": "Bacon"
-        },
-        {
-            "nom": "Pommes"
-        },
-        {
-            "nom": "Pâte"
-        },
-        {
-            "nom": "Carottes"
-        },
-        {
-            "nom": "Pois"
-        },
-        {
-            "nom": "Sauce Curry"
-        },
-        {
-            "nom": "Huile"
-        },
-        {
-            "nom": "Sel"
-        },
-        {
-            "nom": "Poivre"
-        }
-    ],
-    "simulatedRegimes": [
-        {
-            "nom": "Végétarien"
-        },
-        {
-            "nom": "Végan"
-        },
-        {
-            "nom": "Sans Gluten"
-        }
-    ],
-    "simulatedIngredientRecette": [
-        {
-            "recette_id": 1,
-            "ingredient_id": 1
-        },
-        {
-            "recette_id": 1,
-            "ingredient_id": 2
-        },
-        {
-            "recette_id": 1,
-            "ingredient_id": 3
-        },
-        {
-            "recette_id": 2,
-            "ingredient_id": 4
-        },
-        {
-            "recette_id": 2,
-            "ingredient_id": 5
-        },
-        {
-            "recette_id": 2,
-            "ingredient_id": 6
-        },
-        {
-            "recette_id": 3,
-            "ingredient_id": 7
-        },
-        {
-            "recette_id": 3,
-            "ingredient_id": 8
-        },
-        {
-            "recette_id": 4,
-            "ingredient_id": 9
-        },
-        {
-            "recette_id": 4,
-            "ingredient_id": 10
-        },
-        {
-            "recette_id": 4,
-            "ingredient_id": 11
-        },
-        {
-            "recette_id": 5,
-            "ingredient_id": 2
-        },
-        {
-            "recette_id": 5,
-            "ingredient_id": 12
-        },
-        {
-            "recette_id": 5,
-            "ingredient_id": 13
-        },
-        {
-            "recette_id": 5,
-            "ingredient_id": 14
-        }
-    ],
-    "simulatedRegimeRecette": [
-        {
-            "recette_id": 1,
-            "regime_id": 3
-        },
-        {
-            "recette_id": 2,
-            "regime_id": 1
-        },
-        {
-            "recette_id": 3,
-            "regime_id": 1
-        },
-        {
-            "recette_id": 4,
-            "regime_id": 1
-        },
-        {
-            "recette_id": 4,
-            "regime_id": 2
-        },
-        {
-            "recette_id": 5,
-            "regime_id": 3
-        }
-    ]
-}
+[
+    {
+        "recette": [
+            {
+                "nom": "Spaghetti Carbonara",
+                "instructions": "1. Faire bouillir les pâtes dans une grande casserole d'eau salée\n2. Faire revenir la pancetta dans une poêle jusqu'à ce qu'elle soit croustillante\n3. Battre les œufs avec le parmesan râpé dans un bol\n4. Égoutter les pâtes et les mélanger avec la pancetta\n5. Ajouter le mélange œufs-parmesan hors du feu en remuant rapidement\n6. Poivrer généreusement et servir immédiatement",
+                "tempsPreparation": 15,
+                "tempsCuisson": 20,
+                "nbDePortions": 4,
+                "difficulte": "Moyen",
+                "ingredients": [
+                    { "nom": "Spaghetti", "quantite": 400, "unite": "g", "categorie": "pâte" },
+                    { "nom": "Œufs", "quantite": 4, "unite": "pièce", "categorie": "produits laitiers" },
+                    { "nom": "Pancetta", "quantite": 150, "unite": "g", "categorie": "viande" },
+                    { "nom": "Parmesan râpé", "quantite": 100, "unite": "g", "categorie": "fromage" },
+                    { "nom": "Poivre noir", "quantite": 1, "unite": "c. à café", "categorie": "épices" }
+                ]
+            },
+            {
+                "nom": "Salade César",
+                "instructions": "1. Laver et essorer la salade romaine, la couper en morceaux\n2. Faire griller les croûtons au four avec un peu d'huile d'olive\n3. Préparer la sauce en mélangeant mayonnaise, anchois, ail et citron\n4. Assembler la salade avec les croûtons et la sauce\n5. Parsemer de parmesan râpé\n6. Servir immédiatement",
+                "tempsPreparation": 20,
+                "tempsCuisson": 5,
+                "nbDePortions": 2,
+                "difficulte": "Facile",
+                "ingredients": [
+                    { "nom": "Salade romaine", "quantite": 2, "unite": "tête", "categorie": "légumes" },
+                    { "nom": "Pain de mie", "quantite": 4, "unite": "tranche", "categorie": "pain" },
+                    { "nom": "Mayonnaise", "quantite": 4, "unite": "c. à soupe", "categorie": "condiments" },
+                    { "nom": "Parmesan râpé", "quantite": 80, "unite": "g", "categorie": "fromage" },
+                    { "nom": "Anchois", "quantite": 4, "unite": "filet", "categorie": "poisson" },
+                    { "nom": "Ail", "quantite": 4, "unite": "gousse", "categorie": "légumes" }
+                ]
+            },
+            {
+                "nom": "Ratatouille Provençale",
+                "instructions": "1. Laver et couper tous les légumes en dés de taille similaire\n2. Faire revenir l'oignon dans l'huile d'olive jusqu'à transparence\n3. Ajouter l'aubergine et faire cuire 5 minutes\n4. Incorporer les courgettes et poivrons, cuire 5 minutes\n5. Ajouter les tomates, ail, herbes de Provence\n6. Laisser mijoter 30-40 minutes à feu doux\n7. Assaisonner avec sel, poivre et basilic frais",
+                "tempsPreparation": 30,
+                "tempsCuisson": 45,
+                "nbDePortions": 6,
+                "difficulte": "Moyen",
+                "ingredients": [
+                    { "nom": "Aubergines", "quantite": 2, "unite": "pièce", "categorie": "légumes" },
+                    { "nom": "Courgettes", "quantite": 2, "unite": "pièce", "categorie": "légumes" }
+                ]
+            }
+        ]
+    },
+    {
+        "ingredient": [
+            { "nom": "Spaghetti", "unite": "g", "categorie": "pâte" },
+            { "nom": "Œufs", "unite": "pièce", "categorie": "produits laitiers" },
+            { "nom": "Pancetta", "unite": "g", "categorie": "viande" },
+            { "nom": "Parmesan râpé", "unite": "g", "categorie": "fromage" },
+            { "nom": "Poivre noir", "unite": "c. à café", "categorie": "épices" },
+            { "nom": "Salade romaine", "unite": "tête", "categorie": "légumes" },
+            { "nom": "Pain de mie", "unite": "tranche", "categorie": "pain" },
+            { "nom": "Mayonnaise", "unite": "c. à soupe", "categorie": "condiments" },
+            { "nom": "Anchois", "unite": "filet", "categorie": "poisson" },
+            { "nom": "Ail", "unite": "gousse", "categorie": "légumes" },
+            { "nom": "Citron", "unite": "pièce", "categorie": "fruits" },
+            { "nom": "Aubergines", "unite": "pièce", "categorie": "légumes" },
+            { "nom": "Courgettes", "unite": "pièce", "categorie": "légumes" },
+            { "nom": "Tomates", "unite": "pièce", "categorie": "légumes" },
+            { "nom": "Poivrons rouges", "unite": "pièce", "categorie": "légumes" },
+            { "nom": "Oignons", "unite": "pièce", "categorie": "légumes" }
+        ]
+    },
+    {
+        "ingredientRecette": [
+            { "recetteId": 1, "ingredientId": 1, "quantite": 400, "unite": "g" },
+            { "recetteId": 1, "ingredientId": 2, "quantite": 4, "unite": "pièce" },
+            { "recetteId": 1, "ingredientId": 3, "quantite": 150, "unite": "g" },
+            { "recetteId": 1, "ingredientId": 4, "quantite": 100, "unite": "g" },
+            { "recetteId": 1, "ingredientId": 5, "quantite": 1, "unite": "c. à café" },
+            { "recetteId": 2, "ingredientId": 6, "quantite": 2, "unite": "c. à soupe" },
+            { "recetteId": 2, "ingredientId": 7, "quantite": 4, "unite": "tranche" },
+            { "recetteId": 2, "ingredientId": 4, "quantite": 80, "unite": "g" },
+            { "recetteId": 2, "ingredientId": 8, "quantite": 4, "unite": "gousse" },
+            { "recetteId": 3, "ingredientId": 12, "quantite": 2, "unite": "pièce" },
+            { "recetteId": 3, "ingredientId": 13, "quantite": 2, "unite": "pièce" }
+        ]
+    }
+]

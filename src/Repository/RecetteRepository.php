@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Recette;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -40,4 +41,23 @@ class RecetteRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    // src/Repository/RecipeRepository.php
+    // src/Repository/RecipeRepository.php
+    public function findByIngredientsQuery(array $ingredients, ?string $regime = null): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->join('r.ingredients', 'i')
+            ->where('i.nom IN (:ingredients)')
+            ->setParameter('ingredients', $ingredients)
+            ->groupBy('r.id')
+            ->orderBy('COUNT(i.id)', 'DESC'); // Trier par nombre d'ingrédients correspondants
+
+        if ($regime) {
+            $qb->andWhere('r.regime = :regime')
+                ->setParameter('regime', $regime);
+        }
+
+        return $qb;
+    }
 }

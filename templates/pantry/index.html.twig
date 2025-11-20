@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon garde-manger{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .ingredient-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+        }
+        .expiry-warning {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .expiry-soon {
+            color: #fd7e14;
+            font-weight: bold;
+        }
+        .quantity-badge {
+            background: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+        .actions {
+            margin-top: 10px;
+        }
+        .empty-pantry {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>
+                        <i class="fas fa-archive"></i> Mon garde-manger
+                        <small class="text-muted">({{ userIngredients|length }} ingrédients)</small>
+                    </h1>
+                    <div>
+                        <a href="{{ path('pantry_add') }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Ajouter un ingrédient
+                        </a>
+                        <a href="{{ path('pantry_expiring') }}" class="btn btn-warning">
+                            <i class="fas fa-clock"></i> Expiration proche
+                        </a>
+                    </div>
+                </div>
+
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+
+                {% for message in app.flashes('error') %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+
+                {% if userIngredients is empty %}
+                    <div class="empty-pantry">
+                        <i class="fas fa-box-open fa-3x mb-3"></i>
+                        <h3>Votre garde-manger est vide</h3>
+                        <p>Commencez par ajouter vos ingrédients disponibles pour découvrir des recettes adaptées !</p>
+                        <a href="{{ path('pantry_add') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus"></i> Ajouter votre premier ingrédient
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        {% for userIngredient in userIngredients %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="ingredient-card">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h5>{{ userIngredient.ingredient.nom }}</h5>
+                                        <span class="quantity-badge">
+                                            {{ userIngredient.quantity }} {{ userIngredient.getUniteMesure() }}
+                                        </span>
+                                    </div>
+
+                                    {% if userIngredient.dateExpiration %}
+                                        <div class="mt-2">
+                                            <small>
+                                                <i class="fas fa-calendar-alt"></i> Expire le
+                                                {% set today = date() %}
+                                                {% set expiry = userIngredient.dateExpiration %}
+                                                {% set daysLeft = expiry.diff(today).days %}
+
+                                                {% if expiry < today %}
+                                                    <span class="expiry-warning">
+                                                        {{ expiry|date('d/m/Y') }} (Expiré)
+                                                    </span>
+                                                {% elseif daysLeft <= 3 %}
+                                                    <span class="expiry-warning">
+                                                        {{ expiry|date('d/m/Y') }} ({{ daysLeft }} jour{{ daysLeft > 1 ? 's' : '' }})
+                                                    </span>
+                                                {% elseif daysLeft <= 7 %}
+                                                    <span class="expiry-soon">
+                                                        {{ expiry|date('d/m/Y') }} ({{ daysLeft }} jours)
+                                                    </span>
+                                                {% else %}
+                                                    {{ expiry|date('d/m/Y') }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="actions">
+                                        <a href="{{ path('pantry_edit', {'id': userIngredient.id}) }}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i> Modifier
+                                        </a>
+
+                                        <form method="post"
+                                              action="{{ path('pantry_delete', {'id': userIngredient.id}) }}"
+                                              style="display: inline-block;"
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet ingrédient ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ userIngredient.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock"></i> Ajouté le {{ userIngredient.addedAt|date('d/m/Y à H:i') }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

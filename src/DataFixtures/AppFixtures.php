@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-
+require_once 'vendor/autoload.php'; // Assurez-vous que l'autoloader de Composer est inclus
 
 use App\Entity\Ingredient;
 use App\Entity\IngredientRecette;
@@ -10,10 +10,14 @@ use App\Entity\Recette;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 
 class AppFixtures extends Fixture
 {
+
+
+
     public function load(ObjectManager $manager): void
     {
         // Créer les ingrédients
@@ -109,7 +113,7 @@ class AppFixtures extends Fixture
                 'nom' => 'Risotto aux Champignons',
                 'instructions' => "1. Faire revenir l'oignon dans le beurre.\n2. Ajouter le riz et remuer 2 minutes.\n3. Ajouter le bouillon chaud progressivement en remuant.\n4. Incorporer les champignons et le fromage en fin de cuisson.",
                 'tempsPreparation' => 10,
-                'tempsCuisson' => 30,
+                'temps_cuisson' => 30,
                 'nombreDePortions' => 4,
                 'date_creation' => new \DateTime('2017-03-12'),
                 'ingredients' => [
@@ -177,31 +181,45 @@ class AppFixtures extends Fixture
         ];
 
         foreach ($recettes as $recetteData) {
-            $recette = new recette();
-            $recette->setnom($recetteData['nom']);
-            $recette->setInstructions($recetteData['instructions']);
-            $recette->setTempsPreparation($recetteData['tempsPreparation']);
-            $recette->setNombreDePortions($recetteData['nombreDePortions']);
-            $recette->setDateCreation($recetteData['date_creation']);
 
-            foreach ($recetteData['ingredients'] as $ingredientData) {
-                if (isset($ingredientEntities[$ingredientData['nom']])) {
-                    $ingredientrecette = new ingredientRecette();
-                    $ingredientrecette->setRecette($recette);
-                    $ingredientrecette->setIngredient($ingredientEntities[$ingredientData['nom']]);
-                    $ingredientrecette->setQuantite($ingredientData['unite_mesure']);
-                    $ingredientrecette->setUniteMesure($ingredientData['quantite']);
+            $faker = Factory::create('fr_FR'); // Crée une instance de Faker en français
 
-                    $recette->addingredientrecette($ingredientrecette);
-                    $manager->persist($ingredientrecette);
+            for ($i = 0; $i < 10; $i++) { // Crée 10 recettes fictives
+                $recette = new Recette();
+                $recette->setNom($faker->sentence(3)); // Génère un nom fictif
+                $recette->setDescription($faker->paragraph);
+                $recette->setInstructions($faker->text); // Génère des instructions fictives
+                $recette->setTempsPreparation($faker->numberBetween(5, 60)); // Génère un temps de préparation fictif
+                $recette->setTempsCuisson($faker->numberBetween(10, 120)); // Génère un temps de cuisson fictif
+                $recette->setDifficulte($faker->randomElement(['Facile', 'Moyen', 'Difficile'])); // Génère une difficulté fictive
+                $recette->setDateCreation($faker->dateTimeThisYear); // Génère une date de création fictive
+                $recette->setNombreDePortions($faker->numberBetween(1, 10)); // Génère un nombre de portions fictif
+
+
+
+                //$manager->persist($recette);
+
+                foreach ($recetteData['ingredients'] as $ingredientData) {
+                    if (isset($ingredientEntities[$ingredientData['nom']])) {
+                        $ingredientrecette = new ingredientRecette();
+                        $ingredientrecette->setRecette($recette);
+                        $ingredientrecette->setIngredient($ingredientEntities[$ingredientData['nom']]);
+                        $ingredientrecette->setQuantite($ingredientData['quantite']);
+                        $ingredientrecette->setUniteMesure($ingredientData['unite_mesure']);
+
+                        $recette->addingredientrecette($ingredientrecette);
+                        $manager->persist($ingredientrecette);
+                    }
                 }
             }
 
-            $manager->persist($recette);
+                $manager->persist($recette);
+            }
+
+            $manager->flush();
         }
-
-        $manager->flush();
-
-
     }
-}
+
+
+
+

@@ -1,0 +1,159 @@
+// data.js - Version pour navigateur
+
+const recette = [
+    {
+        nom: 'Salade César',
+        instructions: 'Mélanger tous les ingrédients.',
+        tempsPreparation: 15,
+        tempsCuisson: 0,
+        descriptions: 'Une salade classique avec une touche moderne.',
+        difficulte: 'facile',
+        date_creation: '2023-01-15',
+        nombre_de_portions: 2,
+        ingredients: [
+            { nom: 'oeuf', quantite: '4', unite_mesure: 'pièces' },
+            { nom: 'épinard', quantite: '200', unite_mesure: 'g' },
+            { nom: 'beurre', quantite: '20', unite_mesure: 'g' },
+            { nom: 'fromage', quantite: '50', unite_mesure: 'g' },
+            { nom: 'sel', quantite: '1', unite_mesure: 'pincée' },
+            { nom: 'poivre', quantite: '1', unite_mesure: 'pincée' }
+        ]
+    },
+    {
+        nom: 'Pâtes Carbonara',
+        instructions: 'Cuire les pâtes, mélanger avec les œufs et le bacon.',
+        tempsPreparation: 10,
+        tempsCuisson: 15,
+        descriptions: 'Un classique italien riche et crémeux.',
+        difficulte: 'moyen',
+        date_creation: '2023-02-20',
+        nombre_de_portions: 4,
+        ingredients: [
+            { nom: 'oeuf', quantite: '4', unite_mesure: 'pièces' },
+            { nom: 'épinard', quantite: '200', unite_mesure: 'g' },
+            { nom: 'beurre', quantite: '20', unite_mesure: 'g' },
+            { nom: 'fromage', quantite: '50', unite_mesure: 'g' },
+            { nom: 'sel', quantite: '1', unite_mesure: 'pincée' },
+            { nom: 'poivre', quantite: '1', unite_mesure: 'pincée' }
+        ]
+    },
+    {
+        nom: 'Tarte aux Pommes',
+        instructions: 'Préparer la pâte, éplucher les pommes, assembler et cuire.',
+        tempsPreparation: 30,
+        tempsCuisson: 45,
+        descriptions: 'Une délicieuse tarte aux pommes maison.',
+        difficulte: 'moyen',
+        date_creation: '2023-03-10',
+        nombre_de_portions: 6,
+        ingredients: [
+            { nom: 'oeuf', quantite: '4', unite_mesure: 'pièces' },
+            { nom: 'épinard', quantite: '200', unite_mesure: 'g' },
+            { nom: 'beurre', quantite: '20', unite_mesure: 'g' },
+            { nom: 'fromage', quantite: '50', unite_mesure: 'g' },
+            { nom: 'sel', quantite: '1', unite_mesure: 'pincée' },
+            { nom: 'poivre', quantite: '1', unite_mesure: 'pincée' }
+        ]
+    },
+    {
+        nom: 'Curry de Légumes',
+        instructions: 'Faire revenir les légumes, ajouter la sauce curry et laisser mijoter.',
+        tempsPreparation: 20,
+        tempsCuisson: 25,
+        descriptions: 'Un curry végétarien savoureux et épicé.',
+        difficulte: 'facile',
+        date_creation: '2023-04-05',
+        nombre_de_portions: 4,
+        ingredients: [
+            { nom: 'oeuf', quantite: '4', unite_mesure: 'pièces' },
+            { nom: 'épinard', quantite: '200', unite_mesure: 'g' },
+            { nom: 'beurre', quantite: '20', unite_mesure: 'g' },
+            { nom: 'fromage', quantite: '50', unite_mesure: 'g' },
+            { nom: 'sel', quantite: '1', unite_mesure: 'pincée' },
+            { nom: 'poivre', quantite: '1', unite_mesure: 'pincée' }
+        ]
+    },
+    {
+        nom: 'Poulet Grillé',
+        instructions: 'Mariner le poulet, puis le griller avec des épices.',
+        tempsPreparation: 15,
+        tempsCuisson: 30,
+        descriptions: 'Un poulet grillé juteux et savoureux.',
+        difficulte: 'facile',
+        date_creation: '2023-05-12',
+        nombre_de_portions: 3,
+        ingredients: [
+            { nom: 'oeuf', quantite: '4', unite_mesure: 'pièces' },
+            { nom: 'épinard', quantite: '200', unite_mesure: 'g' },
+            { nom: 'beurre', quantite: '20', unite_mesure: 'g' },
+            { nom: 'fromage', quantite: '50', unite_mesure: 'g' },
+            { nom: 'sel', quantite: '1', unite_mesure: 'pincée' },
+            { nom: 'poivre', quantite: '1', unite_mesure: 'pincée' }
+        ]
+    }
+];
+
+const ingredient = [
+    { nom: 'Laitue' },
+    { nom: 'Poulet' },
+    { nom: 'Croûtons' },
+    { nom: 'Pâtes' },
+    { nom: 'Œufs' },
+    { nom: 'Bacon' },
+    { nom: 'Pommes' },
+    { nom: 'Pâte' },
+    { nom: 'Carottes' },
+    { nom: 'Pois' },
+    { nom: 'Sauce Curry' },
+    { nom: 'Huile' },
+    { nom: 'Sel' },
+    { nom: 'Poivre' }
+];
+
+const regime = [
+    { nom: 'Végétarien' },
+    { nom: 'Végan' },
+    { nom: 'Sans Gluten' }
+];
+
+const ingredient_recette = [
+    { recette_id: 1, ingredient_id: 1 },
+    { recette_id: 1, ingredient_id: 2 },
+    { recette_id: 1, ingredient_id: 3 },
+    { recette_id: 2, ingredient_id: 4 },
+    { recette_id: 2, ingredient_id: 5 },
+    { recette_id: 2, ingredient_id: 6 },
+    { recette_id: 3, ingredient_id: 7 },
+    { recette_id: 3, ingredient_id: 8 },
+    { recette_id: 4, ingredient_id: 9 },
+    { recette_id: 4, ingredient_id: 10 },
+    { recette_id: 4, ingredient_id: 11 },
+    { recette_id: 5, ingredient_id: 2 },
+    { recette_id: 5, ingredient_id: 12 },
+    { recette_id: 5, ingredient_id: 13 },
+    { recette_id: 5, ingredient_id: 14 }
+];
+
+const regime_recette = [
+    { recette_id: 1, regime_id: 3 },
+    { recette_id: 2, regime_id: 1 },
+    { recette_id: 3, regime_id: 1 },
+    { recette_id: 4, regime_id: 1 },
+    { recette_id: 4, regime_id: 2 },
+    { recette_id: 5, regime_id: 3 }
+];
+
+// Export pour utilisation dans le navigateur
+const simulatedData = {
+    simulatedRecettes: recette,
+    simulatedIngredients: ingredient,
+    simulatedRegimes: regime,
+    simulatedIngredientRecette: ingredient_recette,
+    simulatedRegimeRecette: regime_recette
+};
+
+const simulatedDataJson = JSON.stringify(simulatedData, null, 2);
+console.log(simulatedDataJson);
+
+// Rendre les données disponibles globalement
+window.simulatedDataJson = simulatedDataJson;

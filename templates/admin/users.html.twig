@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des utilisateurs{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1>Gestion des utilisateurs</h1>
+                <a href="{{ path('admin_dashboard') }}" class="btn btn-secondary mb-3">
+                    ← Retour au tableau de bord
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom complet</th>
+                            <th>Email</th>
+                            <th>Rôles</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.firstName }} {{ user.lastName }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    {% for role in user.roles %}
+                                        {% if role == 'ROLE_ADMIN' %}
+                                            <span class="badge bg-danger">{{ role }}</span>
+                                        {% elseif role == 'ROLE_SUPER_ADMIN' %}
+                                            <span class="badge bg-dark">{{ role }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ role }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% if is_granted('ROLE_SUPER_ADMIN') and user != app.user %}
+                                        {% if not user.hasRole('ROLE_ADMIN') %}
+                                            <a href="{{ path('admin_promote_user', {id: user.id}) }}"
+                                               class="btn btn-sm btn-success"
+                                               onclick="return confirm('Promouvoir cet utilisateur comme administrateur ?')">
+                                                Promouvoir Admin
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ path('admin_demote_user', {id: user.id}) }}"
+                                               class="btn btn-sm btn-warning"
+                                               onclick="return confirm('Retirer les droits administrateur ?')">
+                                                Rétrograder
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

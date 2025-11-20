@@ -3,11 +3,14 @@
 namespace App\Form;
 
 use App\Entity\Ingredient;
+use App\Entity\IngredientRecette;
 use App\Entity\Menu;
 use App\Entity\Recette;
 use App\Entity\Regime;
+use App\Form\IngredientRecetteForm;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,10 +25,12 @@ class RecetteForm extends AbstractType
             ->add('difficulte')
             ->add('dateCreation')
             ->add('nombreDePortions')
-            ->add('ingredients', EntityType::class, [
-                'class' => Ingredient::class,
-                'choice_label' => 'id',
-                'multiple' => true,
+            ->add('ingredientRecettes', CollectionType::class, [
+                'entry_type' => IngredientRecetteForm::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
             ])
             ->add('regimes', EntityType::class, [
                 'class' => Regime::class,

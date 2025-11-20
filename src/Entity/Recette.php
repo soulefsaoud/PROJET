@@ -11,108 +11,138 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: RecetteRepository::class)]
 class Recette
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\OneToMany(mappedBy: 'recette', targetEntity: IngredientRecette::class, cascade: ['persist', 'remove'])]
+    private Collection $ingredientRecettes;
+
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $descriptions = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $instructions = null;
 
-    #[ORM\Column]
-    private ?int $tempsPreparation = null;
+    #[ORM\Column(type: "integer", nullable: true)]
+    private ?int $temps_preparation = null;
 
     #[ORM\Column(type: "integer", nullable: true)]
-    private ?int $tempsCuisson;
+    private ?int $temps_cuisson = null;
 
-    public function getTempsCuisson(): ?int
-    {
-        return $this->tempsCuisson;
-    }
-
-    public function setTempsCuisson(?int $tempsCuisson): self
-    {
-        $this->tempsCuisson = $tempsCuisson;
-    }
-
-    #[ORM\Column(length: 80, nullable:true)]
+    #[ORM\Column(length: 80, nullable: true)]
     private ?string $difficulte = null;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private ?\DateTime $dateCreation = null;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private ?int $nombreDePortions = null;
 
 
-    #[ORM\OneToMany(mappedBy: 'recette', targetEntity: IngredientRecette::class)]
-    private Collection $ingredientRecettes;
+
+    public function setIngredientRecettes(Collection $ingredientRecettes): void
+    {
+        $this->ingredientRecettes = $ingredientRecettes;
+    }
+
+    #[ORM\ManyToMany(targetEntity: Regime::class, mappedBy: 'recettes')]
+    private Collection $regimes;
+
+    #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'recettes')]
+    private Collection $menus;
+
+
+    #[Column(name: 'source_url', type: 'string')]
+    private ?string $sourceUrl = null;
+
+    public function getSourceUrl(): ?string
+    {
+        return $this->sourceUrl;
+    }
+
+    public function setSourceUrl(?string $sourceUrl): void
+    {
+        $this->sourceUrl = $sourceUrl;
+    }
+
+
+
+
+    public function getDescriptions(): ?string
+    {
+        return $this->descriptions;
+    }
+
+    public function setDescriptions(?string $descriptions): void
+    {
+        $this->descriptions = $descriptions;
+    }
+
+
+    /**
+     * @var Collection<int, UserRecette>
+     */
+    #[ORM\OneToMany(targetEntity: UserRecette::class, mappedBy: 'recette')]
+    private Collection $userRecettes;
+
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $imageUrl = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imagePath = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $imageAlt = null;
+
+    // Getters et setters pour les nouvelles propriétés
+    public function getImageUrl(): ?string
+    {
+        return $this->imageUrl;
+    }
+
+    public function setImageUrl(?string $imageUrl): static
+    {
+        $this->imageUrl = $imageUrl;
+        return $this;
+    }
+
+    public function getImagePath(): ?string
+    {
+        return $this->imagePath;
+    }
+
+    public function setImagePath(?string $imagePath): static
+    {
+        $this->imagePath = $imagePath;
+        return $this;
+    }
+
+    public function getImageAlt(): ?string
+    {
+        return $this->imageAlt;
+    }
+
+    public function setImageAlt(?string $imageAlt): static
+    {
+        $this->imageAlt = $imageAlt;
+        return $this;
+    }
+
 
     public function __construct()
     {
         $this->ingredientRecettes = new ArrayCollection();
+        $this->regimes = new ArrayCollection();
+        $this->menus = new ArrayCollection();
+        $this->userRecettes = new ArrayCollection();
     }
-
-    public function getIngredientRecettes(): Collection
-    {
-        return $this->ingredientRecettes;
-    }
-
-    public function addIngredientRecette(IngredientRecette $ingredientRecette): self
-    {
-        if (!$this->ingredientRecettes->contains($ingredientRecette)) {
-            $this->ingredientRecettes[] = $ingredientRecette;
-            $ingredientRecette->setRecette($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIngredientRecette(IngredientRecette $ingredientRecette): self
-    {
-        if ($this->ingredientRecettes->removeElement($ingredientRecette)) {
-            // set the owning side to null (unless already changed)
-            if ($ingredientRecette->getRecette() === $this) {
-                $ingredientRecette->setRecette(null);
-            }
-        }
-
-        return $this;
-    }
-
-
-
-
-//
-//    /**
-//     * @var Collection<int, Ingredient>
-//     */
-//    #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'recettes')]
-//    private Collection $ingredients;
-
-//    /**
-//     * @var Collection<int, Regime>
-//     */
-//    #[ORM\ManyToMany(targetEntity: Regime::class, mappedBy: 'recettes')]
-//    private Collection $regimes;
-//
-//    /**
-//     * @var Collection<int, Menu>
-//     */
-//    #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'recettes')]
-//    private Collection $menus;
-//
-//    public function __construct()
-//    {
-//        $this->ingredients = new ArrayCollection();
-//        $this->regimes = new ArrayCollection();
-//        $this->menus = new ArrayCollection();
-//    }
-//
-
 
     public function getId(): ?int
     {
@@ -127,7 +157,17 @@ class Recette
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+        return $this;
+    }
 
+    public function getDescription(): ?string
+    {
+        return $this->descriptions;
+    }
+
+    public function setDescription(?string $descriptions): static
+    {
+        $this->descriptions = $descriptions;
         return $this;
     }
 
@@ -139,19 +179,28 @@ class Recette
     public function setInstructions(string $instructions): static
     {
         $this->instructions = $instructions;
-
         return $this;
     }
 
     public function getTempsPreparation(): ?int
     {
-        return $this->tempsPreparation;
+        return $this->temps_preparation;
     }
 
-    public function setTempsPreparation(int $tempsPreparation): static
+    public function setTempsPreparation(int $temps_preparation): static
     {
-        $this->tempsPreparation = $tempsPreparation;
+        $this->temps_preparation = $temps_preparation;
+        return $this;
+    }
 
+    public function getTempsCuisson(): ?int
+    {
+        return $this->temps_cuisson;
+    }
+
+    public function setTempsCuisson(?int $temps_cuisson): static
+    {
+        $this->temps_cuisson = $temps_cuisson;
         return $this;
     }
 
@@ -160,10 +209,9 @@ class Recette
         return $this->difficulte;
     }
 
-    public function setDifficulte(string $difficulte): static
+    public function setDifficulte(?string $difficulte): self
     {
         $this->difficulte = $difficulte;
-
         return $this;
     }
 
@@ -172,10 +220,9 @@ class Recette
         return $this->dateCreation;
     }
 
-    public function setDateCreation(\DateTime $dateCreation): static
+    public function setDateCreation(?\DateTime $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
-
         return $this;
     }
 
@@ -184,40 +231,46 @@ class Recette
         return $this->nombreDePortions;
     }
 
-    public function setNombreDePortions(int $nombreDePortions): static
+    public function setNombreDePortions(?int $nombreDePortions): static
     {
         $this->nombreDePortions = $nombreDePortions;
-
         return $this;
     }
-//
-//    /**
-//     * @return Collection<int, Ingredient>
-//     */
-//    public function getIngredients(): Collection
-//    {
-//        return $this->ingredients;
-//    }
-//
-//    public function addIngredient(Ingredient $ingredient): self
-//    {
-//        if (!$this->ingredients->contains($ingredient)) {
-//            $this->ingredients->add($ingredient);
-//        }
-//
-//        return $this;
-//    }
-//
-//    public function removeIngredient(Ingredient $ingredient): self
-//    {
-//        $this->ingredients->removeElement($ingredient);
-//
-//        return $this;
-//    }
 
-    /**
-     * @return Collection<int, Regime>
-     */
+    public function getIngredientRecettes(): Collection
+    {
+        return $this->ingredientRecettes;
+    }
+
+    public function addIngredientRecette(IngredientRecette $ingredientRecette): static
+    {
+        if (!$this->ingredientRecettes->contains($ingredientRecette)) {
+            $this->ingredientRecettes[] = $ingredientRecette;
+            $ingredientRecette->setRecette($this);
+        }
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        $ingredientNames = [];
+        foreach ($this->ingredientRecettes as $ingredient) {
+            $ingredientNames[] = (string) $ingredient;
+        }
+        return implode("\n", $ingredientNames);
+    }
+
+
+    public function removeIngredientRecette(IngredientRecette $ingredientRecette): static
+    {
+        if ($this->ingredientRecettes->removeElement($ingredientRecette)) {
+            if ($ingredientRecette->getRecette() === $this) {
+                $ingredientRecette->setRecette(null);
+            }
+        }
+        return $this;
+    }
+
     public function getRegimes(): Collection
     {
         return $this->regimes;
@@ -229,7 +282,6 @@ class Recette
             $this->regimes->add($regime);
             $regime->addRecette($this);
         }
-
         return $this;
     }
 
@@ -238,13 +290,9 @@ class Recette
         if ($this->regimes->removeElement($regime)) {
             $regime->removeRecette($this);
         }
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Menu>
-     */
     public function getMenus(): Collection
     {
         return $this->menus;
@@ -256,7 +304,6 @@ class Recette
             $this->menus->add($menu);
             $menu->addRecette($this);
         }
-
         return $this;
     }
 
@@ -265,10 +312,36 @@ class Recette
         if ($this->menus->removeElement($menu)) {
             $menu->removeRecette($this);
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserRecette>
+     */
+    public function getUserRecettes(): Collection
+    {
+        return $this->userRecettes;
+    }
+
+    public function addUserRecette(UserRecette $userRecette): static
+    {
+        if (!$this->userRecettes->contains($userRecette)) {
+            $this->userRecettes->add($userRecette);
+            $userRecette->setRecette($this);
+        }
 
         return $this;
     }
 
+    public function removeUserRecette(UserRecette $userRecette): static
+    {
+        if ($this->userRecettes->removeElement($userRecette)) {
+            // set the owning side to null (unless already changed)
+            if ($userRecette->getRecette() === $this) {
+                $userRecette->setRecette(null);
+            }
+        }
 
-
+        return $this;
+    }
 }

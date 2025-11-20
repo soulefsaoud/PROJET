@@ -3,3 +3,81 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+app_home:
+    path: /
+    controller: App\Controller\DefaultController::index
+    methods: ['GET', 'POST']
+    requirements:
+        _format: json
+        _locale: fr
+
+
+api_recettes:
+    path: /api/recettes
+    controller: App\Controller\RecetteController::getRecipes
+    methods: ['GET', 'POST']
+
+api_ingredients:
+    path: /api/ingredients
+    controller: App\Controller\IngredientController::getIngredients
+    methods: ['GET', 'POST']
+
+api_ingredient_id:
+    path: /api/ingredients/{id}
+    controller: App\Controller\IngredientController::getIngredient
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    requirements:
+        id: '\d+'
+
+api_recette_id:
+    path: /api/recettes/{id}
+    controller: App\Controller\RecetteController::getRecipe
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    requirements:
+        id: '\d+'
+
+
+api_ingredient_recette:
+    path: /api/ingredientRecette
+    controller: App\Controller\IngredientRecetteController::getIngredientRecettes
+    methods: ['GET', 'POST']
+
+
+
+api_recette_ingredient:
+    path: /api/recettes/{id}/ingredients
+    controller: App\Controller\RecetteController::getRecipeIngredients
+    methods: ['GET', 'POST']
+    requirements:
+        id: '\d+'
+
+# config/routes.yaml
+app_recette_edit:
+    path: /{id}/edit
+    controller: App\Controller\RecetteController::edit
+    methods: [GET, POST]
+
+
+# config/routes.yaml
+app_recette_delete:
+    path: /{id}/delete
+    controller: App\Controller\RecetteController::delete
+    methods: DELETE
+
+
+
+
+# config/routes.yaml
+load_data:
+    path: /api/load-data
+    controller: App\Controller\LoadDataController::loadData
+    methods: ['POST', 'GET']
+
+# config/routes.yaml
+app_recette_index:
+    path: /recettes
+    controller: App\Controller\RecetteController::index
+
+
+

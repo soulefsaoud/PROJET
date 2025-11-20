@@ -40,4 +40,17 @@ class IngredientRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    // src/Repository/IngredientRepository.php
+
+    public function findByNameLike(string $name): array
+    {
+        return $this->createQueryBuilder('i')
+            ->where('i.name LIKE :name')
+            ->setParameter('name', '%' . $name . '%')
+            ->orderBy('i.name', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
 }
