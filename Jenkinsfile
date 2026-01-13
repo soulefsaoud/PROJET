@@ -1,40 +1,6 @@
 pipeline {
     agent any
 
-    options {
-        skipDefaultCheckout(true)
-    }
-
-    stages {
-        stage('🧹 Clean Workspace') {
-            steps {
-                deleteDir()
-            }
-        }
-
-        stage('📥 Checkout') {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[
-                        url: 'https://github.com/soulefsaoud/PROJET.git'
-                    ]]
-                ])
-            }
-        }
-
-        stage('🔨 Build Docker Image') {
-            steps {
-                sh 'docker compose build'
-            }
-        }
-    }
-}
-
-pipeline {
-    agent any
-
     environment {
         REPO_URL = 'https://github.com/soulefsaoud/PROJET.git'
         DOCKER_IMAGE = 'recette_project:latest'

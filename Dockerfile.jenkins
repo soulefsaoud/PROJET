@@ -1,0 +1,14 @@
+FROM jenkins/jenkins:latest-jdk17
+
+USER root
+
+# Installer Docker CLI et Docker Compose
+RUN apt-get update && apt-get install -y \
+    docker.io \
+    docker-compose \
+    && rm -rf /var/lib/apt/lists/*
+
+# Ajouter jenkins à l'utilisateur docker
+RUN usermod -aG docker jenkins
+
+USER jenkins
