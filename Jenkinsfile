@@ -21,7 +21,7 @@ pipeline {
                     echo '=== Construction de l\'image Docker ==='
                     sh 'docker compose build'
                 }
-            }
+
             steps {
                              echo '=== Construction de l\'image Docker ==='
                              sh 'docker compose build'
