@@ -15,10 +15,19 @@ pipeline {
         }
 
         stage('🔨 Build Docker Image') {
-            steps {
-                echo '=== Construction de l\'image Docker ==='
-                sh 'docker compose build'
+
+            stage('🔨 Build Docker Image') {
+                steps {
+                    echo '=== Nettoyage des anciens conteneurs ==='
+                    sh 'docker compose down -v || true'
+                    echo '=== Construction de l\'image Docker ==='
+                    sh 'docker compose build'
+                }
             }
+            steps {
+                             echo '=== Construction de l\'image Docker ==='
+                             sh 'docker compose build'
+                         }
         }
 
         stage('🚀 Start Services') {
