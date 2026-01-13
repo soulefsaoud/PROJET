@@ -1,43 +1,97 @@
 pipeline {
     agent any
 
+    environment {
+        REPO_URL = 'https://github.com/soulefsaoud/PROJET.git'
+        PROJECT_NAME = 'recette-project'
+    }
+
     stages {
         stage('📥 Checkout') {
             steps {
-                echo '=== Récupération du code ==='
-                checkout scm
+                echo '=== Récupération du code depuis Git ==='
+                git branch: 'main', url: env.REPO_URL
             }
         }
 
-        stage('✅ Run Tests') {
+        stage('🔨 Build Docker Image') {
             steps {
-                echo '=== Exécution des tests ==='
-                sh 'php bin/phpunit || true'
+                echo '=== Construction de l\'image Docker ==='
+                sh 'docker compose build'
             }
         }
 
-        stage('✅ Lint Twig') {
+        stage('🚀 Start Services') {
             steps {
-                echo '=== Vérification Twig ==='
-                sh 'php bin/console lint:twig templates/ || true'
+                echo '=== Démarrage des services Docker ==='
+                sh '''
+                    docker compose up -d
+                    sleep 10
+                    docker compose ps
+                '''
             }
         }
 
-        stage('✅ Lint YAML') {
+        stage('🧪 Run PHPUnit Tests') {
             steps {
-                echo '=== Vérification YAML ==='
-                sh 'php bin/console lint:yaml config/ || true'
+                echo '=== Exécution des tests PHPUnit ==='
+                sh '''
+                    docker compose exec -T app php bin/phpunit || true
+                '''
             }
         }
 
-        stage('✅ Build Success') {
+        stage('✅ Code Quality - Lint Twig') {
             steps {
-                echo '✅ Pipeline exécutée avec succès !'
+                echo '=== Vérification de la syntaxe Twig ==='
+                sh '''
+                    docker compose exec -T app php bin/console lint:twig templates/ || true
+                '''
+            }
+        }
+
+        stage('✅ Code Quality - Lint YAML') {
+            steps {
+                echo '=== Vérification de la syntaxe YAML ==='
+                sh '''
+                    docker compose exec -T app php bin/console lint:yaml config/ || true
+                '''
+            }
+        }
+
+        stage('🗑️ Cleanup') {
+            steps {
+                echo '=== Arrêt et nettoyage des conteneurs ==='
+                sh '''
+                    docker compose down || true
+                '''
+            }
+        }
+
+        stage('🚀 Deploy to Production') {
+            when {
+                branch 'main'
+                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
+            steps {
+                echo '=== ✅ Déploiement en production ==='
+                sh '''
+                    docker compose up -d
+                    echo "✅ Application recette_project déployée avec succès !"
+                    docker compose ps
+                '''
             }
         }
     }
 
     post {
+        always {
+            echo '=== Nettoyage final ==='
+            sh 'docker compose down -v || true'
+        }
+        success {
+            echo '✅ Pipeline exécutée avec succès !'
+        }
         failure {
             echo '❌ Erreur dans la pipeline !'
         }
