@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+    app:
+        build: .
+        # SUPPRIME: container_name: recette_project_app
+        ports:
+            - "8081:80"
+        environment:
+            DATABASE_URL: "mysql://symfony_user:symfony_password@db:3306/recipe"
+            APP_ENV: prod
+            APP_SECRET: your_secret_key_here
+            MAILER_DSN: "smtp://mailer:1025"
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            db:
+                condition: service_healthy
+        networks:
+            - compose_network
+
+    db:
+        image: mysql:8.0
+        # SUPPRIME: container_name: compose_enjoy_db
+        environment:
+            MYSQL_ROOT_PASSWORD: root_password
+            MYSQL_DATABASE: recipe
+            MYSQL_USER: symfony_user
+            MYSQL_PASSWORD: symfony_password
+        ports:
+            - "3308:3306"
+        volumes:
+            - db_data:/var/lib/mysql
+        networks:
+            - compose_network
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    mailer:
+        image: axllent/mailpit
+        # SUPPRIME: container_name: recette_project_mailer
+        ports:
+            - "1025:1025"
+            - "8025:8025"
+        networks:
+            - compose_network
+
+volumes:
+    db_data:
+
+networks:
+    compose_network:
+        driver: bridge
