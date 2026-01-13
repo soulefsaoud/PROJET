@@ -1,0 +1,24 @@
+#! recette_network-network-policy.yaml
+# Generated code, do not edit
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    name: recette-network-network-policy
+    namespace: recette-project
+spec:
+    podSelector:
+        matchLabels:
+            com.docker.compose.network.recette_network: "true"
+    policyTypes:
+        - Ingress
+        - Egress
+    ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                    com.docker.compose.network.recette_network: "true"
+    egress:
+        - to:
+            - podSelector:
+                matchLabels:
+                    com.docker.compose.network.recette_network: "true"

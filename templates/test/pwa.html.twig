@@ -1,0 +1,92 @@
+{# templates/test/pwa.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>📱 Test PWA</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">🔍 Détection PWA</div>
+                    <div class="card-body">
+                        <p id="pwa-support"></p>
+                        <p id="install-prompt"></p>
+                        <p id="standalone-mode"></p>
+                        <button id="install-button" class="btn btn-primary d-none">
+                            📱 Installer l'app
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">⚙️ Service Worker</div>
+                    <div class="card-body">
+                        <p id="sw-status"></p>
+                        <p id="sw-registration"></p>
+                        <button id="sw-update" class="btn btn-secondary">
+                            🔄 Vérifier MAJ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test PWA Support
+        document.addEventListener('DOMContentLoaded', function() {
+            // Test Service Worker
+            if ('serviceWorker' in navigator) {
+                document.getElementById('pwa-support').innerHTML = '✅ PWA supportée';
+
+                navigator.serviceWorker.getRegistration().then(registration => {
+                    if (registration) {
+                        document.getElementById('sw-status').innerHTML = '✅ Service Worker actif';
+                        document.getElementById('sw-registration').innerHTML = 'Scope: ' + registration.scope;
+                    } else {
+                        document.getElementById('sw-status').innerHTML = '❌ Service Worker non enregistré';
+                    }
+                });
+            } else {
+                document.getElementById('pwa-support').innerHTML = '❌ PWA non supportée';
+            }
+
+            // Test mode standalone
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                document.getElementById('standalone-mode').innerHTML = '✅ App installée et lancée';
+            } else {
+                document.getElementById('standalone-mode').innerHTML = '⚠️ Mode navigateur web';
+            }
+
+            // Test prompt d'installation
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                document.getElementById('install-prompt').innerHTML = '✅ Prompt d\'installation disponible';
+                document.getElementById('install-button').classList.remove('d-none');
+
+                document.getElementById('install-button').addEventListener('click', () => {
+                    e.prompt();
+                    e.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            document.getElementById('install-prompt').innerHTML = '✅ App installée !';
+                        }
+                    });
+                });
+            });
+
+            // Bouton update SW
+            document.getElementById('sw-update').addEventListener('click', () => {
+                navigator.serviceWorker.getRegistration().then(registration => {
+                    if (registration) {
+                        registration.update().then(() => {
+                            alert('Vérification des mises à jour terminée');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

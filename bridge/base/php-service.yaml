@@ -1,0 +1,19 @@
+#! php-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: php-published
+    namespace: recette-project
+    labels:
+        com.docker.compose.project: recette_project
+        com.docker.compose.service: php
+spec:
+    selector:
+        com.docker.compose.project: recette_project
+        com.docker.compose.service: php
+    ports:
+        - name: php-8082
+          port: 8082
+          protocol: TCP
+          targetPort: php-80

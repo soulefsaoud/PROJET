@@ -1,0 +1,25 @@
+#! mailer-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: mailer-published
+    namespace: recette-project
+    labels:
+        com.docker.compose.project: recette_project
+        com.docker.compose.service: mailer
+spec:
+    selector:
+        com.docker.compose.project: recette_project
+        com.docker.compose.service: mailer
+    ports:
+        - name: mailer-58309
+          port: 58309
+          protocol: TCP
+          targetPort: mailer-8025
+        - name: mailer-58310
+          port: 58310
+          protocol: TCP
+          targetPort: mailer-1025
+
+# check if there is at least one published port

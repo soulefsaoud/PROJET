@@ -1,0 +1,36 @@
+#! mailer-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: mailer
+    namespace: recette-project
+    labels:
+        com.docker.compose.project: recette_project
+        com.docker.compose.service: mailer
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: recette_project
+            com.docker.compose.service: mailer
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: recette_project
+                com.docker.compose.service: mailer
+                com.docker.compose.network.recette_network: "true"
+        spec:
+            containers:
+                - name: recette-project-mailer
+                  image: axllent/mailpit
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                    - name: mailer-1025
+                      containerPort: 1025
+                    - name: mailer-1110
+                      containerPort: 1110
+                    - name: mailer-8025
+                      containerPort: 8025

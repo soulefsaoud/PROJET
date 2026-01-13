@@ -1531,11 +1531,26 @@
 
     <section class="hero-bis">
         <div class="container">
+        {% if app.user %}
+            <p>Bonjour {{ app.user.email }} !</p>
+
+            <a href="{{ path('app_logout') }}">Déconnexion</a>
+
+        {% endif %}
+        </div>
+    </section>
+
+
+
+    <section class="hero-bis">
+        <div class="container">
             <h1>Votre application de recettes personnalisées</h1>
             <p>Découvrez des milliers de recettes adaptées à vos goûts et à vos ingrédients disponibles</p>
             <a href="#search" class="btn">Commencer maintenant</a>
         </div>
     </section>
+
+
 
 
     <section class="hero-bis">
@@ -2079,7 +2094,7 @@
                     var html = '';
                     for (var i = 0; i < recettes.length; i++) {
                         var recipe = recettes[i];
-                        html += '<div class="recipe-card recipe-card-ajax" style="animation-delay: ' + (i * 0.1) + 's;">';
+                        html += '<div class="recipe-card recipe-card-ajax" style="animation-delay: ' + (i * 0.1) + 'sec;">';
 
                         html += '<div class="recipe-image">';
                         if (recipe.image) {

@@ -1,0 +1,42 @@
+#! php-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: php
+    namespace: recette-project
+    labels:
+        com.docker.compose.project: recette_project
+        com.docker.compose.service: php
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: recette_project
+            com.docker.compose.service: php
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: recette_project
+                com.docker.compose.service: php
+                com.docker.compose.network.recette_network: "true"
+        spec:
+            containers:
+                - name: recette-project-php
+                  image: recette_project-php
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: DATABASE_URL
+                      value: "mysql://recette_user:recette_password@database:3306/recette_db?serverVersion=8.0"
+                  ports:
+                    - name: php-80
+                      containerPort: 80
+                  volumeMounts:
+                    - name: var-www-html
+                      mountPath: /var/www/html
+            volumes:
+                - name: var-www-html
+                  hostPath:
+                    path: C:\Users\soule\PhpstormProjects\Recette_project\recette_project

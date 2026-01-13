@@ -4,6 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Métadonnées PWA -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="theme-color" content="#007bff">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="RecettesIA">
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Icônes iOS -->
+    <link rel="apple-touch-icon" href="/images/logo_mobile.svg">
+
+    <!-- Autres métadonnées existantes -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo_mobile.svg">
+    <link rel="icon" type="image/png" sizes="512x512" href="/images/web-app-manifest-512x512.png">
+
+    <link rel="manifest" href="/site.webmanifest">
+
+
+
+
     <title>{% block title %}Compose & Enjoy{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -215,48 +238,59 @@
     {% block stylesheets %}{% endblock %}
 
 </head>
-<body>
-<header>
-    <header>
-        <div class="container">
-            <div class="header-container">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <div class="fridge">
-                            <div class="fridge-handle"></div>
-                        </div>
-                        <div class="orange-tag"></div>
-                    </div>
-                    <div>
-                        <div class="logo-text">
-                            <span class="green">COMPOSE </span><span class="orange">& ENJOY</span>
-                        </div>
-                        <div class="tagline">Transformez vos ingrédients</div>
-                    </div>
-                </div>
-                <nav>
-                    <ul>
-                        <li><a href="#features">Comment ça marche</a></li>
-                        <li><a href="#search">Rechercher</a></li>
-                        <li><a href="#recipes">Recettes</a></li>
-                        <li><a href="{{ path('app_login') }}" class="btn" style="padding: 8px 16px; font-size: 0.9rem;">Se connecter</a></li>
-                        <!-- Dans votre navbar -->
-                        <li>
-                            <a class="pantry-link" href="{{ path('pantry_index') }}">
-                                <i class="fas fa-archive"></i> Mon garde-manger
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
 
-    </header>
-<main>
-    {% block body %}{% endblock %}
-</main>
-{# Bootstrap JS #}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<header>
+    <div class="container">
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <div class="fridge">
+                        <div class="fridge-handle"></div>
+                    </div>
+                    <div class="orange-tag"></div>
+                </div>
+                <div>
+                    <div class="logo-text">
+                        <span class="green">COMPOSE </span><span class="orange">& ENJOY</span>
+                    </div>
+                    <div class="tagline">Transformez vos ingrédients</div>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#features">Comment ça marche</a></li>
+                    <li><a href="#search">Rechercher</a></li>
+                    <li><a href="#recipes">Recettes</a></li>
+                    {% if app.user %}
+                        <li><a href="{{ path('app_logout') }}" class="btn" style="padding: 8px 16px; font-size: 0.9rem;">Se déconnecter</a></li>
+                        {% if 'ROLE_SUPER_ADMIN' in app.user.roles %}
+                            <p>Vous êtes un super administrateur.</p>
+
+                            <li><a href="{{ path('admin_dashboard') }}" class="btn" style="padding: 8px 16px; font-size: 0.9rem;">Administration</a></li>
+                        {% endif %}
+
+                        {% else %}
+                        <li><a href="{{ path('app_login') }}" class="btn" style="padding: 8px 16px; font-size: 0.9rem;">Se connecter</a></li>
+                    {% endif %}
+
+                    <!-- Dans votre navbar -->
+                    <li>
+                        <a class="pantry-link" href="{{ path('pantry_index') }}">
+                            <i class="fas fa-archive"></i> Mon garde-manger
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+</header>
+
+
+{% block body %}
+
+    {# Bootstrap JS #}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
 {% block javascripts %}
     <script>
@@ -281,11 +315,57 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</header>
-</body>
-</html>
+
+    <script>
+        // Enregistrement du Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW enregistré: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('Échec SW: ', registrationError);
+                    });
+            });
+        }
+
+        // Prompt d'installation PWA
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // Affiche un bouton d'installation personnalisé
+            const installButton = document.createElement('button');
+            installButton.textContent = '📱 Installer l\'app';
+            installButton.className = 'btn btn-success position-fixed';
+            installButton.style.bottom = '20px';
+            installButton.style.right = '20px';
+            installButton.style.zIndex = '9999';
+
+            installButton.addEventListener('click', () => {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('PWA installée');
+                    }
+                    deferredPrompt = null;
+                    installButton.remove();
+                });
+            });
+
+            document.body.appendChild(installButton)%});
+
+    </script>
 
 {% endblock %}
+{% endblock %}
+</html>
+
+
+
 
 
 

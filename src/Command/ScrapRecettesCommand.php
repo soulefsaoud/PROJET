@@ -36,13 +36,18 @@ class ScrapRecettesCommand extends Command
 
         $io->title('Scraping des recettes');
 
-        $results = $this->scraperService->scrapeMultipleRecipes($urls);
+        foreach ($urls as $url) {
+            $recipe = $this->scraperService->scrapeRecipe($url);
 
-        foreach ($results as $result) {
-            if ($result['success']) {
-                $io->success("✓ " . $result['recipe']->getNom() . " depuis " . $result['url']);
+            if ($recipe) {
+                $io->success("✓ " . $recipe->getNom() . " depuis " . $url);
             } else {
-                $io->error("✗ Échec pour " . $result['url']);
+                $io->error("✗ Échec pour " . $url);
+            }
+
+            // Pause entre les requêtes
+            if (count($urls) > 1) {
+                sleep(2);
             }
         }
 

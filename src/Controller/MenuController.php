@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Menu;
+use App\Entity\Recette;
 use App\Form\MenuForm;
 use App\Repository\MenuRepository;
 use Doctrine\ORM\EntityManagerInterface;

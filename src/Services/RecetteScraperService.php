@@ -1,27 +1,26 @@
 <?php
-
+// src/Services/RecetteScraperService.php
 namespace App\Services;
 
 use App\Entity\Recette;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\DomCrawler\Crawler;
 
 class RecetteScraperService
 {
-    private Client $httpClient;
-    private EntityManagerInterface $entityManager;
-    private RecetteParserService $parser;
+    private $httpClient;
+    private $entityManager;
+    private $parser;
 
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        RecetteParserService $parser
-    ) {
+    public function __construct(EntityManagerInterface $entityManager, RecetteParserService $parser)
+    {
         $this->httpClient = new Client([
             'timeout' => 30,
             'headers' => [
-                'User-Agent' => 'Mozilla/5.0 (compatible; RecipeBot/1.0)'
-            ]
+                'User-Agent' => 'Mozilla/5.0 (compatible; RecipeBot/1.0)',
+            ],
         ]);
         $this->entityManager = $entityManager;
         $this->parser = $parser;
@@ -32,27 +31,19 @@ class RecetteScraperService
         try {
             $response = $this->httpClient->get($url);
             $html = $response->getBody()->getContents();
-
             $crawler = new Crawler($html);
 
-            // Vérifier d'abord les données structurées JSON-LD
             $recipe = $this->parser->parseJsonLd($crawler, $url);
-
             if (!$recipe) {
-                // Fallback sur extraction manuelle
                 $recipe = $this->parser->parseManual($crawler, $url);
             }
 
-            if ($recipe) {
-                $this->entityManager->persist($recipe);
-                $this->entityManager->flush();
-            }
-
             return $recipe;
-
+        } catch (GuzzleException $e) {
+            error_log("Erreur HTTP lors du scraping de $url: " . $e->getMessage());
+            return null;
         } catch (\Exception $e) {
-            // Log l'erreur
-            error_log("Erreur scraping $url: " . $e->getMessage());
+            error_log("Erreur lors du scraping de $url: " . $e->getMessage());
             return null;
         }
     }
@@ -62,15 +53,16 @@ class RecetteScraperService
         $results = [];
 
         foreach ($urls as $url) {
+            $this->entityManager->clear(); // Nettoie l'EntityManager avant chaque nouvelle URL
             $recipe = $this->scrapeRecipe($url);
+
             $results[] = [
                 'url' => $url,
                 'success' => $recipe !== null,
                 'recipe' => $recipe
             ];
 
-            // Pause entre les requêtes pour être respectueux
-            sleep(2);
+            sleep(2); // Pause pour éviter de surcharger les serveurs
         }
 
         return $results;

@@ -5,7 +5,7 @@ namespace App\Controller;
 
 use App\Entity\UserIngredient;
 use App\Entity\Ingredient;
-use App\Form\UserIngredientType;
+use App\Form\UserIngredientTypeForm;
 use App\Repository\UserIngredientRepository;
 use App\Repository\IngredientRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -52,7 +52,7 @@ class PantryController extends AbstractController
         $userIngredient->setUser($user);
         $userIngredient->setAddedAt(new \DateTime());
 
-        $form = $this->createForm(UserIngredientType::class, $userIngredient);
+        $form = $this->createForm(UserIngredientTypeForm::class, $userIngredient);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -74,6 +74,7 @@ class PantryController extends AbstractController
             } else {
                 // Ajouter le nouvel ingrédient
                 $this->entityManager->persist($userIngredient);
+         //       $this->entityManager->flush();
                 $this->addFlash('success', 'Ingrédient ajouté au garde-manger !');
             }
 
@@ -97,7 +98,7 @@ class PantryController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $form = $this->createForm(UserIngredientType::class, $userIngredient);
+        $form = $this->createForm(UserIngredientTypeForm::class, $userIngredient);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

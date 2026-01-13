@@ -1,0 +1,211 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Assistant Culinaire IA{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>🍳 Assistant Culinaire IA</h1>
+        <p class="lead">Saisissez vos ingrédients et laissez l'IA créer des recettes personnalisées !</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Mes ingrédients</h5>
+                        <form method="post" id="ingredients-form">
+                            <div class="mb-3">
+                                <input type="text"
+                                       class="form-control"
+                                       name="ingredients"
+                                       id="ingredients-input"
+                                       placeholder="Ex: tomates, basilic, mozzarella"
+                                       value="{{ ingredients }}"
+                                       required>
+                                <small class="form-text text-muted">
+                                    Séparez les ingrédients par des virgules
+                                </small>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="generate-btn">
+                                <span class="spinner-border spinner-border-sm d-none" id="loading-spinner"></span>
+                                Générer des recettes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6" id="recipes-container">
+                {% if recipes is not empty and recipes.error is not defined %}
+                    <h3>Recettes générées :</h3>
+                    {% for recipe in recipes %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ recipe.nom ?? 'Recette sans nom' }}</h5>
+                                {% if recipe.temps %}
+                                    <p><strong>⏰ Temps :</strong> {{ recipe.temps }}</p>
+                                {% endif %}
+                                {% if recipe.ingredients %}
+                                    <p><strong>🥘 Ingrédients :</strong> {{ recipe.ingredients }}</p>
+                                {% endif %}
+                                {% if recipe.instructions %}
+                                    <p><strong>📝 Instructions :</strong></p>
+                                    <div class="instructions">{{ recipe.instructions|nl2br }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% elseif recipes.error is defined %}
+                    <div class="alert alert-danger">{{ recipes.error }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('ingredients-form');
+            const btn = document.getElementById('generate-btn');
+            const spinner = document.getElementById('loading-spinner');
+
+            form.addEventListener('submit', function() {
+                btn.disabled = true;
+                spinner.classList.remove('d-none');
+            });
+        });
+    </script>
+
+    <script>
+        // Gestion offline/online
+        function updateOnlineStatus() {
+            const statusIndicator = document.getElementById('status-indicator') || createStatusIndicator();
+            if (navigator.onLine) {
+                statusIndicator.textContent = '🟢 En ligne';
+                statusIndicator.className = 'badge bg-success position-fixed';
+            } else {
+                statusIndicator.textContent = '🔴 Hors ligne';
+                statusIndicator.className = 'badge bg-danger position-fixed';
+            }
+        }
+
+        function createStatusIndicator() {
+            const indicator = document.createElement('span');
+            indicator.id = 'status-indicator';
+            indicator.style.top = '10px';
+            indicator.style.left = '10px';
+            indicator.style.zIndex = '9999';
+            document.body.appendChild(indicator);
+            return indicator;
+        }
+
+        // Mise en cache des recettes générées
+        function cacheRecipes(recipes, ingredients) {
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'CACHE_RECIPES',
+                    recipes: recipes,
+                    ingredients: ingredients
+                });
+            }
+
+            // Stockage local également
+            const cacheData = {
+                recipes: recipes,
+                ingredients: ingredients,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('lastRecipes', JSON.stringify(cacheData));
+        }
+
+        // Récupération des recettes en cache en cas d'offline
+        function getOfflineRecipes() {
+            const cached = localStorage.getItem('lastRecipes');
+            if (cached) {
+                const data = JSON.parse(cached);
+                // Cache valide pendant 1 heure
+                if (Date.now() - data.timestamp < 3600000) {
+                    return data;
+                }
+            }
+            return null;
+        }
+
+        // Modification du formulaire pour gérer l'offline
+        document.getElementById('ingredients-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const ingredientsInput = document.getElementById('ingredients-input').value;
+            const ingredients = ingredientsInput.split(',').map(i => i.trim()).filter(i => i);
+
+            if (!navigator.onLine) {
+                // Mode offline : chercher dans le cache
+                const cached = getOfflineRecipes();
+                if (cached && JSON.stringify(cached.ingredients.sort()) === JSON.stringify(ingredients.sort())) {
+                    displayRecipes(cached.recipes);
+                    showOfflineNotice();
+                    return;
+                } else {
+                    showOfflineError();
+                    return;
+                }
+            }
+
+            // Mode online : appel API normal
+            try {
+                const response = await fetch('/api/ai-recipes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ingredients: ingredients })
+                });
+
+                const recipes = await response.json();
+                displayRecipes(recipes);
+                cacheRecipes(recipes, ingredients);
+
+            } catch (error) {
+                console.error('Erreur API:', error);
+                // Tentative de récupération depuis le cache
+                const cached = getOfflineRecipes();
+                if (cached) {
+                    displayRecipes(cached.recipes);
+                    showOfflineNotice();
+                } else {
+                    showError('Impossible de générer les recettes. Vérifiez votre connexion.');
+                }
+            }
+        });
+
+        function displayRecipes(recipes) {
+            const container = document.getElementById('recipes-container');
+            // Logique d'affichage des recettes...
+        }
+
+        function showOfflineNotice() {
+            const notice = document.createElement('div');
+            notice.className = 'alert alert-warning';
+            notice.textContent = '📱 Recettes affichées depuis le cache (mode hors ligne)';
+            document.querySelector('.container').prepend(notice);
+            setTimeout(() => notice.remove(), 5000);
+        }
+
+        function showOfflineError() {
+            const error = document.createElement('div');
+            error.className = 'alert alert-danger';
+            error.textContent = '❌ Aucune recette en cache. Connectez-vous pour générer de nouvelles recettes.';
+            document.querySelector('.container').prepend(error);
+            setTimeout(() => error.remove(), 5000);
+        }
+
+        function showError(message) {
+            const error = document.createElement('div');
+            error.className = 'alert alert-danger';
+            error.textContent = message;
+            document.querySelector('.container').prepend(error);
+            setTimeout(() => error.remove(), 5000);
+        }
+
+        // Écouteurs d'événements pour le statut réseau
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        window.addEventListener('load', updateOnlineStatus);
+    </script>
+{% endblock %}

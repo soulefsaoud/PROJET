@@ -16,13 +16,13 @@ class IngredientForm extends AbstractType
         $builder
             ->add('nom')
             ->add('categorie')
-            ->add('unite_mesure')
-            ->add('recettes', EntityType::class, [
+            ->add('unite_mesure');
+           /* ->add('recettes', EntityType::class, [
                 'class' => Recette::class,
                 'choice_label' => 'id',
                 'multiple' => true,
             ])
-        ;
+        ;*/
     }
 
     public function configureOptions(OptionsResolver $resolver): void

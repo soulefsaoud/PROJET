@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 #[Route('/ingredient')]
 final class IngredientController extends AbstractController
 {
-    // ... rest of the class remains unchanged
 
     private EntityManagerInterface $entityManager;
 
@@ -55,7 +54,7 @@ final class IngredientController extends AbstractController
         ]);
     }
 
-    #[Route('/ingredient/{id}', name: 'app_ingredient_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_ingredient_show', methods: ['GET'])]
     public function show(Ingredient $ingredient): Response
     {
         return $this->render('ingredient/show.html.twig', [

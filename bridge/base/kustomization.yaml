@@ -1,0 +1,18 @@
+#! kustomization.yaml
+# Generated code, do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+    - 0-recette-project-namespace.yaml
+    - database-deployment.yaml
+    - database-expose.yaml
+    - database-mysql_data-persistentVolumeClaim.yaml
+    - database-service.yaml
+    - mailer-deployment.yaml
+    - mailer-expose.yaml
+    - mailer-service.yaml
+    - php-C:\Users\soule\PhpstormProjects\Recette_project\recette_project-persistentVolumeClaim.yaml
+    - php-deployment.yaml
+    - php-expose.yaml
+    - php-service.yaml
+    - recette_network-network-policy.yaml

@@ -51,6 +51,8 @@ class UltraFastRecipeSearch {
         };
     }
 
+
+
     /**
      * Crée le conteneur de pagination s'il n'existe pas
      */

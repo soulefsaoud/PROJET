@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Tests multiples ingrédients</h1>
+
+        {% for result in results %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>Test :</strong> {{ result.ingredients|join(', ') }}
+                    {% if result.success %}
+                        <span class="badge bg-success">✅ Succès</span>
+                    {% else %}
+                        <span class="badge bg-danger">❌ Échec</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if result.success %}
+                        {% for recipe in result.recipes %}
+                            <h5>{{ recipe.nom ?? 'Sans nom' }}</h5>
+                            <p>{{ recipe.instructions ?? 'Pas d\'instructions' }}</p>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-danger">{{ result.error }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

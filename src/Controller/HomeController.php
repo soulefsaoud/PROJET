@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Recette; // Assurez-vous d'importer votre entité Recette
+use App\Entity\Recette;
 use Doctrine\Persistence\ManagerRegistry;
 #[Route('/'  , name: 'app_home', methods: ['GET', 'POST'])]
 class HomeController extends AbstractController
@@ -21,6 +21,7 @@ class HomeController extends AbstractController
 
         // Passer les recettes au template
         return $this->render('home/index.html.twig', [
+            'user' => $this->getUser(),
             'recettes' => $recettes,
         ]);
     }

@@ -1,0 +1,9 @@
+#! php-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: php-published
+    namespace: recette-project
+spec:
+    type: LoadBalancer

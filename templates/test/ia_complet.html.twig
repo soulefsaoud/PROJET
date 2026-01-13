@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>🧪 Tests IA Complets</h1>
+
+        <!-- Statistiques globales -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <h3>{{ success_rate }}%</h3>
+                        <small>Taux de succès</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h3>{{ average_time }}ms</h3>
+                        <small>Temps moyen</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h3>{{ results|length }}</h3>
+                        <small>Tests effectués</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body text-center">
+                        <h3>{{ total_time }}ms</h3>
+                        <small>Temps total</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Résultats détaillés -->
+        {% for result in results %}
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between">
+                <span>
+                    <strong>{{ result.ingredients|join(', ') }}</strong>
+                    <small class="text-muted">({{ result.description }})</small>
+                </span>
+                    <span>
+                    {% if result.success %}
+                        <span class="badge bg-success">✅ {{ result.time_ms }}ms</span>
+                        <span class="badge bg-info">{{ result.recipe_count }} recettes</span>
+                    {% else %}
+                        <span class="badge bg-danger">❌ {{ result.time_ms }}ms</span>
+                    {% endif %}
+                </span>
+                </div>
+
+                {% if result.success %}
+                    <div class="card-body">
+                        {% for recipe in result.recipes %}
+                            <div class="mb-3">
+                                <h6>{{ recipe.nom ?? 'Recette sans nom' }}</h6>
+                                <p class="small text-muted">
+                                    {{ recipe.instructions ?? recipe.ingredients ?? 'Pas de détails' }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="card-body bg-light">
+                        <p class="text-danger mb-0">
+                            <strong>Erreur :</strong> {{ result.error ?? 'Erreur inconnue' }}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

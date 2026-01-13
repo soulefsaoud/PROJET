@@ -31,6 +31,7 @@ class AuthController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
+    #[Route('/register', name: 'app_register')]
     public function register(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
@@ -45,12 +46,18 @@ class AuthController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $hashedPassword = $passwordHasher->hashPassword(
-                $user,
-                $user->getPassword()
-            );
+            // Vérification de l'existence de l'email
+            $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+            if ($existingUser) {
+                $this->addFlash('error', 'Un compte existe déjà avec cet email.');
+                return $this->redirectToRoute('app_register');
+            }
+
+            // Hashage du mot de passe
+            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hashedPassword);
 
+            // Persistance
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -62,6 +69,7 @@ class AuthController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
 
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void

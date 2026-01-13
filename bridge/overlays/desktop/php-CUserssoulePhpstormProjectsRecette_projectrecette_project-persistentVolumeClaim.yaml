@@ -1,0 +1,9 @@
+#! php-C:\Users\soule\PhpstormProjects\Recette_project\recette_project-persistentVolumeClaim.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: php-c--users-soule-phpstormprojects-recette-project-recette-project
+    namespace: recette-project
+spec:
+    storageClassName: "hostpath" # see docker/desktop-storage-provisioner

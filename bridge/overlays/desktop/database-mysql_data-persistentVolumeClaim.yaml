@@ -1,0 +1,9 @@
+#! database-mysql_data-persistentVolumeClaim.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: database-mysql-data
+    namespace: recette-project
+spec:
+    storageClassName: "hostpath" # see docker/desktop-storage-provisioner

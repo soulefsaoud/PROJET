@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6026680601397a6c382c460cfaae4ca6",
+    "content-hash": "cc359d201ac3dd2e195b4ba9f2f2caaf",
     "packages": [
         {
             "name": "composer/semver",
@@ -625,28 +625,28 @@
         },
         {
             "name": "doctrine/doctrine-migrations-bundle",
-            "version": "3.4.2",
+            "version": "3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineMigrationsBundle.git",
-                "reference": "5a6ac7120c2924c4c070a869d08b11ccf9e277b9"
+                "reference": "1e380c6dd8ac8488217f39cff6b77e367f1a644b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/5a6ac7120c2924c4c070a869d08b11ccf9e277b9",
-                "reference": "5a6ac7120c2924c4c070a869d08b11ccf9e277b9",
+                "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/1e380c6dd8ac8488217f39cff6b77e367f1a644b",
+                "reference": "1e380c6dd8ac8488217f39cff6b77e367f1a644b",
                 "shasum": ""
             },
             "require": {
-                "doctrine/doctrine-bundle": "^2.4",
+                "doctrine/doctrine-bundle": "^2.4 || ^3.0",
                 "doctrine/migrations": "^3.2",
                 "php": "^7.2 || ^8.0",
                 "symfony/deprecation-contracts": "^2.1 || ^3",
-                "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0"
+                "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0 || ^8.0"
             },
             "require-dev": {
                 "composer/semver": "^3.0",
-                "doctrine/coding-standard": "^12",
+                "doctrine/coding-standard": "^12 || ^14",
                 "doctrine/orm": "^2.6 || ^3",
                 "phpstan/phpstan": "^1.4 || ^2",
                 "phpstan/phpstan-deprecation-rules": "^1 || ^2",
@@ -654,8 +654,8 @@
                 "phpstan/phpstan-strict-rules": "^1.1 || ^2",
                 "phpstan/phpstan-symfony": "^1.3 || ^2",
                 "phpunit/phpunit": "^8.5 || ^9.5",
-                "symfony/phpunit-bridge": "^6.3 || ^7",
-                "symfony/var-exporter": "^5.4 || ^6 || ^7"
+                "symfony/phpunit-bridge": "^6.3 || ^7 || ^8",
+                "symfony/var-exporter": "^5.4 || ^6 || ^7 || ^8"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -690,7 +690,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/DoctrineMigrationsBundle/issues",
-                "source": "https://github.com/doctrine/DoctrineMigrationsBundle/tree/3.4.2"
+                "source": "https://github.com/doctrine/DoctrineMigrationsBundle/tree/3.7.0"
             },
             "funding": [
                 {
@@ -706,7 +706,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-03-11T17:36:26+00:00"
+            "time": "2025-11-15T19:02:59+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -2165,6 +2165,71 @@
                 }
             ],
             "time": "2025-03-24T10:02:05+00:00"
+        },
+        {
+            "name": "nelmio/cors-bundle",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nelmio/NelmioCorsBundle.git",
+                "reference": "530217472204881cacd3671909f634b960c7b948"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nelmio/NelmioCorsBundle/zipball/530217472204881cacd3671909f634b960c7b948",
+                "reference": "530217472204881cacd3671909f634b960c7b948",
+                "shasum": ""
+            },
+            "require": {
+                "psr/log": "^1.0 || ^2.0 || ^3.0",
+                "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.11.5",
+                "phpstan/phpstan-deprecation-rules": "^1.2.0",
+                "phpstan/phpstan-phpunit": "^1.4",
+                "phpstan/phpstan-symfony": "^1.4.4",
+                "phpunit/phpunit": "^8"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nelmio\\CorsBundle\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nelmio",
+                    "homepage": "http://nelm.io"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://github.com/nelmio/NelmioCorsBundle/contributors"
+                }
+            ],
+            "description": "Adds CORS (Cross-Origin Resource Sharing) headers support in your Symfony application",
+            "keywords": [
+                "api",
+                "cors",
+                "crossdomain"
+            ],
+            "support": {
+                "issues": "https://github.com/nelmio/NelmioCorsBundle/issues",
+                "source": "https://github.com/nelmio/NelmioCorsBundle/tree/2.6.0"
+            },
+            "time": "2025-10-23T06:57:22+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -4685,16 +4750,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v7.3.0",
+            "version": "v7.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "57e4fb86314015a695a750ace358d07a7e37b8a9"
+                "reference": "1c064a0c67749923483216b081066642751cc2c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/57e4fb86314015a695a750ace358d07a7e37b8a9",
-                "reference": "57e4fb86314015a695a750ace358d07a7e37b8a9",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/1c064a0c67749923483216b081066642751cc2c7",
+                "reference": "1c064a0c67749923483216b081066642751cc2c7",
                 "shasum": ""
             },
             "require": {
@@ -4706,6 +4771,7 @@
             },
             "conflict": {
                 "amphp/amp": "<2.5",
+                "amphp/socket": "<1.1",
                 "php-http/discovery": "<1.15",
                 "symfony/http-foundation": "<6.4"
             },
@@ -4718,7 +4784,6 @@
             "require-dev": {
                 "amphp/http-client": "^4.2.1|^5.0",
                 "amphp/http-tunnel": "^1.0|^2.0",
-                "amphp/socket": "^1.1",
                 "guzzlehttp/promises": "^1.4|^2.0",
                 "nyholm/psr7": "^1.0",
                 "php-http/httplug": "^1.0|^2.0",
@@ -4760,7 +4825,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v7.3.0"
+                "source": "https://github.com/symfony/http-client/tree/v7.3.2"
             },
             "funding": [
                 {
@@ -4772,11 +4837,15 @@
                     "type": "github"
                 },
                 {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
                     "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-05-02T08:23:16+00:00"
+            "time": "2025-07-15T11:36:08+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -9372,16 +9441,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.24",
+            "version": "11.5.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "6b07ab1047155cf38f82dd691787a277782271dd"
+                "reference": "4ad8fe263a0b55b54a8028c38a18e3c5bef312e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/6b07ab1047155cf38f82dd691787a277782271dd",
-                "reference": "6b07ab1047155cf38f82dd691787a277782271dd",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4ad8fe263a0b55b54a8028c38a18e3c5bef312e0",
+                "reference": "4ad8fe263a0b55b54a8028c38a18e3c5bef312e0",
                 "shasum": ""
             },
             "require": {
@@ -9453,7 +9522,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.24"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.26"
             },
             "funding": [
                 {
@@ -9477,7 +9546,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-20T11:31:02+00:00"
+            "time": "2025-07-04T05:58:21+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -10675,31 +10744,31 @@
         },
         {
             "name": "symfony/maker-bundle",
-            "version": "v1.63.0",
+            "version": "v1.65.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/maker-bundle.git",
-                "reference": "69478ab39bc303abfbe3293006a78b09a8512425"
+                "reference": "eba30452d212769c9a5bcf0716959fd8ba1e54e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/69478ab39bc303abfbe3293006a78b09a8512425",
-                "reference": "69478ab39bc303abfbe3293006a78b09a8512425",
+                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/eba30452d212769c9a5bcf0716959fd8ba1e54e3",
+                "reference": "eba30452d212769c9a5bcf0716959fd8ba1e54e3",
                 "shasum": ""
             },
             "require": {
                 "doctrine/inflector": "^2.0",
                 "nikic/php-parser": "^5.0",
                 "php": ">=8.1",
-                "symfony/config": "^6.4|^7.0",
-                "symfony/console": "^6.4|^7.0",
-                "symfony/dependency-injection": "^6.4|^7.0",
+                "symfony/config": "^6.4|^7.0|^8.0",
+                "symfony/console": "^6.4|^7.0|^8.0",
+                "symfony/dependency-injection": "^6.4|^7.0|^8.0",
                 "symfony/deprecation-contracts": "^2.2|^3",
-                "symfony/filesystem": "^6.4|^7.0",
-                "symfony/finder": "^6.4|^7.0",
-                "symfony/framework-bundle": "^6.4|^7.0",
-                "symfony/http-kernel": "^6.4|^7.0",
-                "symfony/process": "^6.4|^7.0"
+                "symfony/filesystem": "^6.4|^7.0|^8.0",
+                "symfony/finder": "^6.4|^7.0|^8.0",
+                "symfony/framework-bundle": "^6.4|^7.0|^8.0",
+                "symfony/http-kernel": "^6.4|^7.0|^8.0",
+                "symfony/process": "^6.4|^7.0|^8.0"
             },
             "conflict": {
                 "doctrine/doctrine-bundle": "<2.10",
@@ -10707,12 +10776,14 @@
             },
             "require-dev": {
                 "composer/semver": "^3.0",
-                "doctrine/doctrine-bundle": "^2.5.0",
+                "doctrine/doctrine-bundle": "^2.5.0|^3.0.0",
                 "doctrine/orm": "^2.15|^3",
-                "symfony/http-client": "^6.4|^7.0",
-                "symfony/phpunit-bridge": "^6.4.1|^7.0",
-                "symfony/security-core": "^6.4|^7.0",
-                "symfony/yaml": "^6.4|^7.0",
+                "doctrine/persistence": "^3.1|^4.0",
+                "symfony/http-client": "^6.4|^7.0|^8.0",
+                "symfony/phpunit-bridge": "^6.4.1|^7.0|^8.0",
+                "symfony/security-core": "^6.4|^7.0|^8.0",
+                "symfony/security-http": "^6.4|^7.0|^8.0",
+                "symfony/yaml": "^6.4|^7.0|^8.0",
                 "twig/twig": "^3.0|^4.x-dev"
             },
             "type": "symfony-bundle",
@@ -10747,7 +10818,7 @@
             ],
             "support": {
                 "issues": "https://github.com/symfony/maker-bundle/issues",
-                "source": "https://github.com/symfony/maker-bundle/tree/v1.63.0"
+                "source": "https://github.com/symfony/maker-bundle/tree/v1.65.1"
             },
             "funding": [
                 {
@@ -10759,11 +10830,15 @@
                     "type": "github"
                 },
                 {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
                     "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-04-26T01:41:37+00:00"
+            "time": "2025-12-02T07:14:37+00:00"
         },
         {
             "name": "symfony/web-profiler-bundle",

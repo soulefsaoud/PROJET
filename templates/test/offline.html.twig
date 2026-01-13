@@ -1,0 +1,99 @@
+{# templates/test/offline.html.twig #}
+<div class="container mt-4">
+    <h1>🔌 Test Mode Offline</h1>
+
+    <div class="alert alert-info">
+        <strong>Instructions :</strong>
+        <ol>
+            <li>Ouvrez DevTools → Network</li>
+            <li>Cochez "Offline"</li>
+            <li>Testez les fonctionnalités ci-dessous</li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">📱 Status Réseau</div>
+                <div class="card-body">
+                    <p id="network-status"></p>
+                    <p id="last-update"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">💾 Cache Test</div>
+                <div class="card-body">
+                    <button id="test-cache" class="btn btn-primary">
+                        Test Cache Recettes
+                    </button>
+                    <div id="cache-result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test de génération offline -->
+    <div class="mt-4">
+        <h3>🧪 Test Génération Recettes Offline</h3>
+        <form id="offline-form">
+            <input type="text" placeholder="tomate, basilic" id="offline-ingredients">
+            <button type="submit">Générer (test offline)</button>
+        </form>
+        <div id="offline-results"></div>
+    </div>
+</div>
+
+<script>
+    // Test réseau
+    function updateNetworkStatus() {
+        const status = navigator.onLine ? '🟢 En ligne' : '🔴 Hors ligne';
+        document.getElementById('network-status').textContent = status;
+        document.getElementById('last-update').textContent = 'MAJ: ' + new Date().toLocaleTimeString();
+    }
+
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    updateNetworkStatus();
+
+    // Test cache
+    document.getElementById('test-cache').addEventListener('click', async () => {
+        try {
+            const response = await fetch('/api/ai-recipes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ingredients: ['test', 'cache'] })
+            });
+
+            if (response.ok) {
+                document.getElementById('cache-result').innerHTML = '✅ Cache fonctionne';
+            } else {
+                document.getElementById('cache-result').innerHTML = '❌ Erreur: ' + response.status;
+            }
+        } catch (error) {
+            document.getElementById('cache-result').innerHTML = '⚠️ Mode offline: ' + error.message;
+        }
+    });
+
+    // Test form offline
+    document.getElementById('offline-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!navigator.onLine) {
+            // Mode offline : chercher en cache local
+            const cached = localStorage.getItem('lastRecipes');
+            if (cached) {
+                document.getElementById('offline-results').innerHTML =
+                    '💾 Recettes depuis le cache local<br>' +
+                    JSON.parse(cached).recipes.map(r => r.nom).join(', ');
+            } else {
+                document.getElementById('offline-results').innerHTML =
+                    '❌ Aucune recette en cache. Connectez-vous d\'abord.';
+            }
+        } else {
+            document.getElementById('offline-results').innerHTML = '🌐 Mode en ligne détecté';
+        }
+    });
+</script>

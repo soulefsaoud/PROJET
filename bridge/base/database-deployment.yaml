@@ -1,0 +1,56 @@
+#! database-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: database
+    namespace: recette-project
+    labels:
+        com.docker.compose.project: recette_project
+        com.docker.compose.service: database
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: recette_project
+            com.docker.compose.service: database
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: recette_project
+                com.docker.compose.service: database
+                com.docker.compose.network.recette_network: "true"
+        spec:
+            containers:
+                - name: recette-project-database
+                  image: mysql:8.0
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: MYSQL_DATABASE
+                      value: "recette_db"
+                    - name: MYSQL_PASSWORD
+                      value: "recette_password"
+                    - name: MYSQL_ROOT_PASSWORD
+                      value: "root_password"
+                    - name: MYSQL_USER
+                      value: "recette_user"
+                  livenessProbe:
+                    exec:
+                        command: [mysqladmin ping -h localhost]
+                    periodSeconds: 5
+                    timeoutSeconds: 5
+                    failureThreshold: 5
+                  ports:
+                    - name: database-3306
+                      containerPort: 3306
+                    - name: database-33060
+                      containerPort: 33060
+                  volumeMounts:
+                    - name: var-lib-mysql
+                      mountPath: /var/lib/mysql
+            volumes:
+                - name: var-lib-mysql
+                  persistentVolumeClaim:
+                    claimName: database-mysql-data
