@@ -3,7 +3,8 @@ version: '3.8'
 services:
     app:
         build: .
-        # SUPPRIME: container_name: recette_project_app
+        # ❌ SUPPRIME cette ligne :
+        # container_name: recette_project_app
         ports:
             - "8081:80"
         environment:
@@ -21,7 +22,8 @@ services:
 
     db:
         image: mysql:8.0
-        # SUPPRIME: container_name: compose_enjoy_db
+        # ❌ SUPPRIME cette ligne :
+        # container_name: compose_enjoy_db
         environment:
             MYSQL_ROOT_PASSWORD: root_password
             MYSQL_DATABASE: recipe
@@ -41,7 +43,8 @@ services:
 
     mailer:
         image: axllent/mailpit
-        # SUPPRIME: container_name: recette_project_mailer
+        # ❌ SUPPRIME cette ligne :
+        # container_name: recette_project_mailer
         ports:
             - "1025:1025"
             - "8025:8025"
