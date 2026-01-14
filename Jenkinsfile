@@ -99,3 +99,13 @@ pipeline {
         }
     }
 }
+stage('✅ Health Check') {
+    steps {
+        echo '=== Vérification de la santé de l\'application ==='
+        sh '''
+            sleep 5
+            docker compose ps
+            curl -f http://localhost:8081 || echo "⚠️ L'app n'est pas accessible"
+        '''
+    }
+}
