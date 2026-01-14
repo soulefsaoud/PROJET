@@ -32,11 +32,9 @@ services:
         networks:
             - compose_network
 
+
     mailer:
         image: axllent/mailpit
-        ports:
-            - "1026:1025"
-            - "8026:8025"
         networks:
             - compose_network
 
