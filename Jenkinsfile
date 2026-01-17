@@ -18,18 +18,19 @@ pipeline {
         stage('🔨 Build Docker Image') {
             steps {
                 echo '=== Nettoyage des anciens conteneurs ==='
-                sh 'docker compose down -v || true'
+                bat 'docker compose down -v || exit 0'
+
                 echo '=== Construction de l\'image Docker ==='
-                sh 'docker compose build'
+                bat 'docker compose build'
             }
         }
 
         stage('🚀 Start Services') {
             steps {
                 echo '=== Démarrage des services Docker ==='
-                sh '''
+                bat '''
                     docker compose up -d
-                    sleep 10
+                    timeout /t 10
                     docker compose ps
                 '''
             }
@@ -38,28 +39,28 @@ pipeline {
         stage('🧪 Run PHPUnit Tests') {
             steps {
                 echo '=== Exécution des tests PHPUnit ==='
-                sh 'docker compose exec -T app php bin/phpunit || true'
+                bat 'docker compose exec -T app php bin/phpunit || exit 0'
             }
         }
 
-        stage('✅ Code Quality - Lint Twig') {
+        stage('✅ Lint Twig') {
             steps {
                 echo '=== Vérification de la syntaxe Twig ==='
-                sh 'docker compose exec -T app php bin/console lint:twig templates/ || true'
+                bat 'docker compose exec -T app php bin/console lint:twig templates/ || exit 0'
             }
         }
 
-        stage('✅ Code Quality - Lint YAML') {
+        stage('✅ Lint YAML') {
             steps {
                 echo '=== Vérification de la syntaxe YAML ==='
-                sh 'docker compose exec -T app php bin/console lint:yaml config/ || true'
+                bat 'docker compose exec -T app php bin/console lint:yaml config/ || exit 0'
             }
         }
 
         stage('🗑️ Cleanup') {
             steps {
                 echo '=== Arrêt et nettoyage des conteneurs ==='
-                sh 'docker compose down || true'
+                bat 'docker compose down || exit 0'
             }
         }
 
@@ -70,7 +71,7 @@ pipeline {
             }
             steps {
                 echo '=== Déploiement en production ==='
-                sh '''
+                bat '''
                     docker compose up -d
                     echo "✅ Application recette_project déployée avec succès !"
                     docker compose ps
@@ -82,7 +83,7 @@ pipeline {
     post {
         always {
             echo '=== Nettoyage final ==='
-            sh 'docker compose down -v || true'
+            bat 'docker compose down -v || exit 0'
         }
         success {
             echo '✅ Pipeline exécutée avec succès !'
