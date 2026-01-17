@@ -1,5 +1,10 @@
 pipeline {
-    agent { docker { image 'docker:26-cli' args '-v /var/run/docker.sock:/var/run/docker.sock' } }
+    agent {
+        docker {
+            image 'docker:26-cli'
+            args '-v /var/run/docker.sock:/var/run/docker.sock --entrypoint=""'
+        }
+    }
 
     environment {
         REPO_URL = 'https://github.com/soulefsaoud/PROJET.git'
@@ -7,25 +12,35 @@ pipeline {
     }
 
     stages {
+
+        stage('🐳 Install Docker Compose') {
+            steps {
+                sh '''
+                    apk add --no-cache docker-cli-compose
+                    docker compose version
+                '''
+            }
+        }
+
         stage('📥 Checkout') {
             steps {
-                echo '=== Récupération du code depuis Git ==='
+                echo '=== Récupération du code ==='
                 git branch: 'main', url: env.REPO_URL
             }
         }
 
         stage('🔨 Build Docker Image') {
             steps {
-                echo '=== Nettoyage des anciens conteneurs ==='
-                sh 'docker compose down -v || true'
-                echo '=== Construction de l\'image Docker ==='
-                sh 'docker compose build'
+                echo '=== Nettoyage & build ==='
+                sh '''
+                    docker compose down -v || true
+                    docker compose build
+                '''
             }
         }
 
         stage('🚀 Start Services') {
             steps {
-                echo '=== Démarrage des services Docker ==='
                 sh '''
                     docker compose up -d
                     sleep 10
@@ -34,52 +49,32 @@ pipeline {
             }
         }
 
-        stage('🧪 Run PHPUnit Tests') {
+        stage('🧪 PHPUnit Tests') {
             steps {
-                echo '=== Exécution des tests PHPUnit ==='
-                sh '''
-                    docker compose exec -T app php bin/phpunit || true
-                '''
+                sh 'docker compose exec -T app php bin/phpunit'
             }
         }
 
-        stage('✅ Code Quality - Lint Twig') {
+        stage('✅ Lint Twig') {
             steps {
-                echo '=== Vérification de la syntaxe Twig ==='
-                sh '''
-                    docker compose exec -T app php bin/console lint:twig templates/ || true
-                '''
+                sh 'docker compose exec -T app php bin/console lint:twig templates/'
             }
         }
 
-        stage('✅ Code Quality - Lint YAML') {
+        stage('✅ Lint YAML') {
             steps {
-                echo '=== Vérification de la syntaxe YAML ==='
-                sh '''
-                    docker compose exec -T app php bin/console lint:yaml config/ || true
-                '''
+                sh 'docker compose exec -T app php bin/console lint:yaml config/'
             }
         }
 
-        stage('🗑️ Cleanup') {
-            steps {
-                echo '=== Arrêt et nettoyage des conteneurs ==='
-                sh '''
-                    docker compose down || true
-                '''
-            }
-        }
-
-        stage('🚀 Deploy to Production') {
+        stage('🚀 Deploy Production') {
             when {
                 branch 'main'
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-                echo '=== ✅ Déploiement en production ==='
+                echo '=== Déploiement production ==='
                 sh '''
                     docker compose up -d
-                    echo "✅ Application recette_project déployée avec succès !"
                     docker compose ps
                 '''
             }
@@ -88,15 +83,13 @@ pipeline {
 
     post {
         always {
-            echo '=== Nettoyage final ==='
             sh 'docker compose down -v || true'
         }
         success {
-            echo '✅ Pipeline exécutée avec succès !'
+            echo '✅ Pipeline exécuté avec succès'
         }
         failure {
-            echo '❌ Erreur dans la pipeline !'
+            echo '❌ Pipeline en échec'
         }
     }
 }
-
