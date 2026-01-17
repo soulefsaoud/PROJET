@@ -1,6 +1,6 @@
 services:
     - type: web
-      name: recette-project-prod
+      name: recette-project
       env: docker
       plan: free
       dockerfilePath: ./Dockerfile
@@ -11,13 +11,11 @@ services:
             value: prod
           - key: APP_SECRET
             value: your_secret_key_here
+          - key: MAILER_DSN
+            value: smtp://mailer:1025
 
-    - type: mysql
-      name: recette-project-db
-      plan: free
+databases:
+    - name: recette-project-db
+      databaseName: recipe
+      user: symfony_user
       ipAllowList: []
-      envVars:
-          - key: MYSQL_DATABASE
-            value: recipe
-          - key: MYSQL_ROOT_PASSWORD
-            value: root_password
