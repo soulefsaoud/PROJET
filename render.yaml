@@ -1,0 +1,23 @@
+services:
+    - type: web
+      name: recette-project-prod
+      env: docker
+      plan: free
+      dockerfilePath: ./Dockerfile
+      envVars:
+          - key: DATABASE_URL
+            value: mysql://symfony_user:symfony_password@db:3306/recipe
+          - key: APP_ENV
+            value: prod
+          - key: APP_SECRET
+            value: your_secret_key_here
+
+    - type: mysql
+      name: recette-project-db
+      plan: free
+      ipAllowList: []
+      envVars:
+          - key: MYSQL_DATABASE
+            value: recipe
+          - key: MYSQL_ROOT_PASSWORD
+            value: root_password
