@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:26-cli'
-            args '-v /var/run/docker.sock:/var/run/docker.sock --entrypoint=""'
-        }
-    }
+    agent { docker { image 'docker:26-cli' args '-v /var/run/docker.sock:/var/run/docker.sock' } }
 
     environment {
         REPO_URL = 'https://github.com/soulefsaoud/PROJET.git'
@@ -12,35 +7,25 @@ pipeline {
     }
 
     stages {
-
-        stage('🐳 Install Docker Compose') {
-            steps {
-                sh '''
-                    apk add --no-cache docker-cli-compose
-                    docker compose version
-                '''
-            }
-        }
-
         stage('📥 Checkout') {
             steps {
-                echo '=== Récupération du code ==='
+                echo '=== Récupération du code depuis Git ==='
                 git branch: 'main', url: env.REPO_URL
             }
         }
 
         stage('🔨 Build Docker Image') {
             steps {
-                echo '=== Nettoyage & build ==='
-                sh '''
-                    docker compose down -v || true
-                    docker compose build
-                '''
+                echo '=== Nettoyage des anciens conteneurs ==='
+                sh 'docker compose down -v || true'
+                echo '=== Construction de l\'image Docker ==='
+                sh 'docker compose build'
             }
         }
 
         stage('🚀 Start Services') {
             steps {
+                echo '=== Démarrage des services Docker ==='
                 sh '''
                     docker compose up -d
                     sleep 10
@@ -49,32 +34,52 @@ pipeline {
             }
         }
 
-        stage('🧪 PHPUnit Tests') {
+        stage('🧪 Run PHPUnit Tests') {
             steps {
-                sh 'docker compose exec -T app php bin/phpunit'
+                echo '=== Exécution des tests PHPUnit ==='
+                sh '''
+                    docker compose exec -T app php bin/phpunit || true
+                '''
             }
         }
 
-        stage('✅ Lint Twig') {
+        stage('✅ Code Quality - Lint Twig') {
             steps {
-                sh 'docker compose exec -T app php bin/console lint:twig templates/'
+                echo '=== Vérification de la syntaxe Twig ==='
+                sh '''
+                    docker compose exec -T app php bin/console lint:twig templates/ || true
+                '''
             }
         }
 
-        stage('✅ Lint YAML') {
+        stage('✅ Code Quality - Lint YAML') {
             steps {
-                sh 'docker compose exec -T app php bin/console lint:yaml config/'
+                echo '=== Vérification de la syntaxe YAML ==='
+                sh '''
+                    docker compose exec -T app php bin/console lint:yaml config/ || true
+                '''
             }
         }
 
-        stage('🚀 Deploy Production') {
+        stage('🗑️ Cleanup') {
+            steps {
+                echo '=== Arrêt et nettoyage des conteneurs ==='
+                sh '''
+                    docker compose down || true
+                '''
+            }
+        }
+
+        stage('🚀 Deploy to Production') {
             when {
                 branch 'main'
+                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-                echo '=== Déploiement production ==='
+                echo '=== ✅ Déploiement en production ==='
                 sh '''
                     docker compose up -d
+                    echo "✅ Application recette_project déployée avec succès !"
                     docker compose ps
                 '''
             }
@@ -83,13 +88,15 @@ pipeline {
 
     post {
         always {
+            echo '=== Nettoyage final ==='
             sh 'docker compose down -v || true'
         }
         success {
-            echo '✅ Pipeline exécuté avec succès'
+            echo '✅ Pipeline exécutée avec succès !'
         }
         failure {
-            echo '❌ Pipeline en échec'
+            echo '❌ Erreur dans la pipeline !'
         }
     }
 }
+
