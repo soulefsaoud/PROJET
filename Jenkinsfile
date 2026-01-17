@@ -1,10 +1,5 @@
 pipeline {
-agent {
-    docker {
-        image 'docker:26-cli'
-        args '-v /var/run/docker.sock:/var/run/docker.sock --entrypoint=""'
-    }
-}
+    agent any
 
     environment {
         REPO_URL = 'https://github.com/soulefsaoud/PROJET.git'
@@ -12,6 +7,7 @@ agent {
     }
 
     stages {
+
         stage('📥 Checkout') {
             steps {
                 echo '=== Récupération du code depuis Git ==='
@@ -42,36 +38,28 @@ agent {
         stage('🧪 Run PHPUnit Tests') {
             steps {
                 echo '=== Exécution des tests PHPUnit ==='
-                sh '''
-                    docker compose exec -T app php bin/phpunit || true
-                '''
+                sh 'docker compose exec -T app php bin/phpunit || true'
             }
         }
 
         stage('✅ Code Quality - Lint Twig') {
             steps {
                 echo '=== Vérification de la syntaxe Twig ==='
-                sh '''
-                    docker compose exec -T app php bin/console lint:twig templates/ || true
-                '''
+                sh 'docker compose exec -T app php bin/console lint:twig templates/ || true'
             }
         }
 
         stage('✅ Code Quality - Lint YAML') {
             steps {
                 echo '=== Vérification de la syntaxe YAML ==='
-                sh '''
-                    docker compose exec -T app php bin/console lint:yaml config/ || true
-                '''
+                sh 'docker compose exec -T app php bin/console lint:yaml config/ || true'
             }
         }
 
         stage('🗑️ Cleanup') {
             steps {
                 echo '=== Arrêt et nettoyage des conteneurs ==='
-                sh '''
-                    docker compose down || true
-                '''
+                sh 'docker compose down || true'
             }
         }
 
@@ -81,7 +69,7 @@ agent {
                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-                echo '=== ✅ Déploiement en production ==='
+                echo '=== Déploiement en production ==='
                 sh '''
                     docker compose up -d
                     echo "✅ Application recette_project déployée avec succès !"
@@ -104,4 +92,3 @@ agent {
         }
     }
 }
-
