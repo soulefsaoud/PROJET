@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { docker { image 'docker:26-cli' args '-v /var/run/docker.sock:/var/run/docker.sock' } }
 
     environment {
         REPO_URL = 'https://github.com/soulefsaoud/PROJET.git'
