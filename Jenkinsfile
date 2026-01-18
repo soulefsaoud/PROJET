@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+   agent {
+       docker {
+           image 'docker/compose:latest'  // Image avec compose préinstallé
+           args '-v /var/run/docker.sock:/var/run/docker.sock'
+       }
+   }
 
     environment {
         DOCKER_COMPOSE_CMD = 'docker-compose'
