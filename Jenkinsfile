@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Définir les variables d'environnement
-        DOCKER_COMPOSE_CMD = 'docker-compose'
+        DOCKER_COMPOSE_CMD = 'docker compose'
         PROJECT_NAME = 'mon-projet'
     }
 
