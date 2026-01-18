@@ -3,12 +3,25 @@ pipeline {
 
     environment {
         // Définir les variables d'environnement
-        DOCKER_COMPOSE_CMD = 'docker-compose'
+        DOCKER_COMPOSE_CMD = 'docker compose'
         PROJECT_NAME = 'mon-projet'
     }
 
     stages {
+
+    stage('🐳 Install Docker Compose') {
+        steps {
+            sh '''
+                apt-get update
+                apt-get install -y docker-compose-plugin
+                docker compose version
+            '''
+        }
+    }
+
+
         stage('Vérification Environnement') {
+
             steps {
                 script {
                     echo '=== Vérification de l\'environnement Docker ==='
@@ -24,10 +37,6 @@ pipeline {
                         env.DOCKER_COMPOSE_CMD = 'docker compose'
                         echo 'Utilisation de Docker Compose v2'
                         sh 'docker compose version'
-                    } else {
-                        env.DOCKER_COMPOSE_CMD = 'docker-compose'
-                        echo 'Utilisation de Docker Compose v1'
-                        sh 'docker-compose --version'
                     }
                 }
             }
