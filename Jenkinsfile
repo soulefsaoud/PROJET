@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:26.1.5-cli'
-            args '-v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/bin/docker-compose:/usr/local/bin/docker-compose:ro'
-        }
-    }
+    agent any
 
     environment {
         DOCKER_COMPOSE_CMD = 'docker-compose'
