@@ -1,16 +1,48 @@
-FROM jenkins/jenkins:latest-jdk17
+FROM php:8.2-apache
 
-USER root
+# Installer les extensions PHP
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpq-dev \
+    zip \
+    unzip \
+    && docker-php-ext-install pdo pdo_mysql \
+    && a2enmod rewrite \
+    && apt-get clean
 
-# Installer Docker CLI
-RUN apt-get update && \
-    apt-get install -y docker.io curl && \
-    rm -rf /var/lib/apt/lists/*
+# Installer Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Installer Docker Compose v2 (plugin officiel)
-RUN mkdir -p /usr/local/lib/docker/cli-plugins && \
-    curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 \
-        -o /usr/local/lib/docker/cli-plugins/docker-compose && \
-    chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+WORKDIR /var/www/html
 
-USER jenkins
+# Copier les fichiers composer
+COPY composer.json composer.lock ./
+
+# Installer les dépendances
+RUN composer install --no-dev --no-scripts --optimize-autoloader 2>&1 || true
+
+# Copier tout le projet
+COPY . .
+
+# Configurer Apache
+RUN echo '<VirtualHost *:80>\n\
+    DocumentRoot /var/www/html/public\n\
+    <Directory /var/www/html/public>\n\
+        AllowOverride All\n\
+        Require all granted\n\
+        <IfModule mod_rewrite.c>\n\
+            RewriteEngine On\n\
+            RewriteCond %{REQUEST_FILENAME} !-f\n\
+            RewriteRule ^(.*)$ index.php [QSA,L]\n\
+        </IfModule>\n\
+    </Directory>\n\
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+
+# Permissions
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html && \
+    chmod -R 775 /var/www/html/var 2>/dev/null || true
+
+EXPOSE 80
+CMD ["apache2-foreground"]

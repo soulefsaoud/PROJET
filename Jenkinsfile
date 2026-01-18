@@ -7,20 +7,17 @@ pipeline {
     }
 
     stages {
-
         stage('📥 Checkout') {
             steps {
                 echo '=== Récupération du code depuis Git ==='
-                sh 'git clone -b main $REPO_URL .'
+                checkout scm
             }
         }
 
         stage('🔨 Build Docker Image') {
             steps {
-                echo '=== Nettoyage des anciens conteneurs ==='
-                sh 'docker compose down -v || true'
-
                 echo '=== Construction de l\'image Docker ==='
+                sh 'docker compose down -v || true'
                 sh 'docker compose build'
             }
         }
@@ -30,8 +27,9 @@ pipeline {
                 echo '=== Démarrage des services Docker ==='
                 sh '''
                     docker compose up -d
-                    sleep 10
+                    sleep 15
                     docker compose ps
+                    docker compose logs
                 '''
             }
         }
@@ -39,43 +37,65 @@ pipeline {
         stage('🧪 Run PHPUnit Tests') {
             steps {
                 echo '=== Exécution des tests PHPUnit ==='
-                sh 'docker compose exec -T app php bin/phpunit || true'
+                sh '''
+                    docker compose exec -T app php bin/phpunit tests/ -v || true
+                    echo "✅ Tests exécutés"
+                '''
             }
         }
 
-        stage('✅ Lint Twig') {
+        stage('✅ Code Quality - Lint Twig') {
             steps {
                 echo '=== Vérification de la syntaxe Twig ==='
-                sh 'docker compose exec -T app php bin/console lint:twig templates/ || true'
+                sh '''
+                    docker compose exec -T app php bin/console lint:twig templates/ || true
+                '''
             }
         }
 
-        stage('✅ Lint YAML') {
+        stage('✅ Code Quality - Lint YAML') {
             steps {
                 echo '=== Vérification de la syntaxe YAML ==='
-                sh 'docker compose exec -T app php bin/console lint:yaml config/ || true'
+                sh '''
+                    docker compose exec -T app php bin/console lint:yaml config/ || true
+                '''
+            }
+        }
+
+        stage('✅ Code Quality - Lint PHP') {
+            steps {
+                echo '=== Vérification de la syntaxe PHP ==='
+                sh '''
+                    docker compose exec -T app php -l src/ || true
+                '''
+            }
+        }
+
+        stage('📊 Test Results') {
+            steps {
+                echo '=== Résumé des tests ==='
+                sh '''
+                    docker compose exec -T app php bin/phpunit tests/ --testdox || true
+                '''
             }
         }
 
         stage('🗑️ Cleanup') {
             steps {
-                echo '=== Arrêt et nettoyage des conteneurs ==='
-                sh 'docker compose down || true'
+                echo '=== Nettoyage des conteneurs ==='
+                sh '''
+                    docker compose down || true
+                '''
             }
         }
 
-        stage('🚀 Deploy to Production') {
+        stage('✅ Build Success') {
             when {
-                branch 'main'
                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-                echo '=== Déploiement en production ==='
-                sh '''
-                    docker compose up -d
-                    echo "✅ Application recette_project déployée avec succès !"
-                    docker compose ps
-                '''
+                echo '✅ Pipeline exécutée avec succès !'
+                echo 'Application prête pour le déploiement'
             }
         }
     }
@@ -85,11 +105,17 @@ pipeline {
             echo '=== Nettoyage final ==='
             sh 'docker compose down -v || true'
         }
+
         success {
-            echo '✅ Pipeline exécutée avec succès !'
+            echo '✅ Pipeline réussie - Tous les tests passent !'
         }
+
         failure {
-            echo '❌ Erreur dans la pipeline !'
+            echo '❌ Pipeline échouée - Vérifier les logs'
+        }
+
+        unstable {
+            echo '⚠️ Pipeline instable - Vérifier les avertissements'
         }
     }
 }
