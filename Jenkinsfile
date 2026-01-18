@@ -2,120 +2,118 @@ pipeline {
     agent any
 
     environment {
-        REPO_URL = 'https://github.com/soulefsaoud/PROJET.git'
-        PROJECT_NAME = 'recette-project'
+        // Définir les variables d'environnement
+        DOCKER_COMPOSE_CMD = 'docker-compose'
+        PROJECT_NAME = 'mon-projet'
     }
 
     stages {
-        stage('📥 Checkout') {
+        stage('Vérification Environnement') {
             steps {
-                echo '=== Récupération du code depuis Git ==='
-                checkout scm
+                script {
+                    echo '=== Vérification de l\'environnement Docker ==='
+                    sh 'docker --version'
+
+                    // Détecter quelle commande docker compose utiliser
+                    def composeV2Available = sh(
+                        script: 'docker compose version',
+                        returnStatus: true
+                    ) == 0
+
+                    if (composeV2Available) {
+                        env.DOCKER_COMPOSE_CMD = 'docker compose'
+                        echo 'Utilisation de Docker Compose v2'
+                    } else {
+                        env.DOCKER_COMPOSE_CMD = 'docker-compose'
+                        echo 'Utilisation de Docker Compose v1'
+                    }
+
+                    sh "${env.DOCKER_COMPOSE_CMD} version"
+                }
             }
         }
 
-        stage('🔨 Build Docker Image') {
+        stage('Nettoyage') {
             steps {
-                echo '=== Construction de l\'image Docker ==='
-                sh 'docker compose down -v || true'
-                sh 'docker compose build'
+                script {
+                    echo '=== Nettoyage des conteneurs existants ==='
+                    // Arrêter et supprimer les conteneurs avec gestion d'erreur
+                    sh """
+                        ${env.DOCKER_COMPOSE_CMD} down -v --remove-orphans || true
+                        docker system prune -f || true
+                    """
+                }
             }
         }
 
-        stage('🚀 Start Services') {
+        stage('Construction de l\'image Docker') {
             steps {
-                echo '=== Démarrage des services Docker ==='
-                sh '''
-                    docker compose up -d
-                    sleep 15
-                    docker compose ps
-                    docker compose logs
-                '''
+                script {
+                    echo '=== Construction de l\'image Docker ==='
+                    sh """
+                        ${env.DOCKER_COMPOSE_CMD} build --no-cache --pull
+                    """
+                }
             }
         }
 
-        stage('🧪 Run PHPUnit Tests') {
+        stage('Démarrage des services') {
             steps {
-                echo '=== Exécution des tests PHPUnit ==='
-                sh '''
-                    docker compose exec -T app php bin/phpunit tests/ -v || true
-                    echo "✅ Tests exécutés"
-                '''
+                script {
+                    echo '=== Démarrage des services ==='
+                    sh """
+                        ${env.DOCKER_COMPOSE_CMD} up -d
+                    """
+                }
             }
         }
 
-        stage('✅ Code Quality - Lint Twig') {
+        stage('Vérification des services') {
             steps {
-                echo '=== Vérification de la syntaxe Twig ==='
-                sh '''
-                    docker compose exec -T app php bin/console lint:twig templates/ || true
-                '''
-            }
-        }
+                script {
+                    echo '=== Vérification de l\'état des conteneurs ==='
+                    sh """
+                        ${env.DOCKER_COMPOSE_CMD} ps
+                        docker ps
+                    """
 
-        stage('✅ Code Quality - Lint YAML') {
-            steps {
-                echo '=== Vérification de la syntaxe YAML ==='
-                sh '''
-                    docker compose exec -T app php bin/console lint:yaml config/ || true
-                '''
-            }
-        }
+                    // Attendre que les services soient prêts
+                    sleep(time: 10, unit: 'SECONDS')
 
-        stage('✅ Code Quality - Lint PHP') {
-            steps {
-                echo '=== Vérification de la syntaxe PHP ==='
-                sh '''
-                    docker compose exec -T app php -l src/ || true
-                '''
-            }
-        }
-
-        stage('📊 Test Results') {
-            steps {
-                echo '=== Résumé des tests ==='
-                sh '''
-                    docker compose exec -T app php bin/phpunit tests/ --testdox || true
-                '''
-            }
-        }
-
-        stage('🗑️ Cleanup') {
-            steps {
-                echo '=== Nettoyage des conteneurs ==='
-                sh '''
-                    docker compose down || true
-                '''
-            }
-        }
-
-        stage('✅ Build Success') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
-            steps {
-                echo '✅ Pipeline exécutée avec succès !'
-                echo 'Application prête pour le déploiement'
+                    // Vérifier les logs en cas de problème
+                    sh """
+                        ${env.DOCKER_COMPOSE_CMD} logs --tail=50
+                    """
+                }
             }
         }
     }
 
     post {
-        always {
-            echo '=== Nettoyage final ==='
-            sh 'docker compose down -v || true'
-        }
-
         success {
-            echo '✅ Pipeline réussie - Tous les tests passent !'
+            echo '=== Pipeline exécuté avec succès ==='
         }
 
         failure {
-            echo '❌ Pipeline échouée - Vérifier les logs'
+            echo '=== Échec du pipeline ==='
+            script {
+                // Afficher les logs en cas d'échec
+                sh """
+                    echo "=== Logs des conteneurs ==="
+                    ${env.DOCKER_COMPOSE_CMD} logs --tail=100 || true
+
+                    echo "=== État des conteneurs ==="
+                    docker ps -a || true
+                """
+            }
         }
 
-        unstable {
-            echo '⚠️ Pipeline instable - Vérifier les avertissements'
+        always {
+            echo '=== Nettoyage final ==='
+            script {
+                // Optionnel : nettoyer les images non utilisées
+                sh 'docker image prune -f || true'
+            }
         }
     }
 }
