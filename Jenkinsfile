@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Définir les variables d'environnement
-        DOCKER_COMPOSE_CMD = 'docker compose'
+        DOCKER_COMPOSE_CMD = 'docker-compose'
         PROJECT_NAME = 'mon-projet'
     }
 
@@ -16,19 +16,19 @@ pipeline {
 
                     // Détecter quelle commande docker compose utiliser
                     def composeV2Available = sh(
-                        script: 'docker compose version',
+                        script: 'docker compose version 2>/dev/null',
                         returnStatus: true
                     ) == 0
 
                     if (composeV2Available) {
                         env.DOCKER_COMPOSE_CMD = 'docker compose'
                         echo 'Utilisation de Docker Compose v2'
+                        sh 'docker compose version'
                     } else {
                         env.DOCKER_COMPOSE_CMD = 'docker-compose'
                         echo 'Utilisation de Docker Compose v1'
+                        sh 'docker-compose --version'
                     }
-
-                    sh "${env.DOCKER_COMPOSE_CMD} version"
                 }
             }
         }
