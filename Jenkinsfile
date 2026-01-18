@@ -17,8 +17,8 @@ pipeline {
         stage('🔨 Build Docker Image') {
             steps {
                 echo '=== Construction de l\'image Docker ==='
-                sh 'docker compose down -v || true'
-                sh 'docker compose build'
+                sh 'docker-compose down -v || true'
+                sh 'docker-compose build'
             }
         }
 
