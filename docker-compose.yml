@@ -17,11 +17,6 @@ services:
                 condition: service_healthy
         networks:
             - compose_network
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost"]
-            interval: 30s
-            timeout: 3s
-            retries: 3
 
     db:
         image: mysql:8.0

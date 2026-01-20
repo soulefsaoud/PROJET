@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Installer les extensions PHP
+# Installer les extensions PHP nécessaires
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -19,13 +19,13 @@ WORKDIR /var/www/html
 # Copier les fichiers composer
 COPY composer.json composer.lock ./
 
-# Installer les dépendances
+# Installer les dépendances SANS les scripts post-install
 RUN composer install --no-dev --no-scripts --optimize-autoloader 2>&1 || true
 
 # Copier tout le projet
 COPY . .
 
-# Configurer Apache
+# Configurer Apache pour Symfony
 RUN echo '<VirtualHost *:80>\n\
     DocumentRoot /var/www/html/public\n\
     <Directory /var/www/html/public>\n\
